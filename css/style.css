@@ -285,6 +285,8 @@ main { max-width: 1240px; margin: 0 auto; padding: 26px max(3vw, 16px) 80px; }
 .chip { min-height: 38px; padding: 7px 14px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel); cursor: pointer; font-size: 14px; font-weight: 700; color: var(--muted); }
 .chip:hover { color: var(--text); }
 .chip.active { background: var(--yellow); color: var(--ink); border-color: var(--ink); }
+.chip .cnt { font-size: 12px; opacity: 0.7; margin-left: 3px; }
+.level-chips .chip { font-size: 15px; min-height: 44px; padding: 8px 16px; }
 .puzzle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-top: 16px; }
 .pz-card { cursor: pointer; padding: 10px; display: flex; flex-direction: column; gap: 8px; transition: transform 0.12s, border-color 0.15s; }
 .pz-card:hover { transform: translateY(-3px) rotate(-0.5deg); border-color: var(--yellow); }

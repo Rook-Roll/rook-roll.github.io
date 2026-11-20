@@ -126,7 +126,86 @@
         { text: 'Now a <b>mate in two</b>. Careful: some queen moves stalemate! Bring your king closer first.', fen: 'k7/8/8/2K5/8/8/8/1Q6 w - - 0 1', task: { solution: ['c5c6', 'a8a7', 'b1b7'], mate: 2 }, hint: 'King to c6 — then the queen lands on b7.' },
       ],
     },
+    {
+      id: 'hanging', level: 'Beginner', category: 'Tactics', icon: '🎯', title: 'Don\'t hang your pieces',
+      summary: 'Spot free pieces — and stop giving yours away.',
+      steps: [
+        { text: 'A piece is <b>hanging</b> when it is attacked and nobody defends it. Hanging pieces are free — for whoever spots them first! Here the white knight attacks the undefended black knight.', fen: '4k3/8/8/4n3/8/5N2/8/4K3 w - - 0 1', arrows: [['f3', 'e5']] },
+        { text: 'A piece is <b>defended</b> when one of its friends could take back. The knight on d5 is protected by the pawn on e6 — if your queen grabs it, the pawn recaptures and you lose your queen for a knight!', fen: '4k3/8/4p3/3n4/8/8/8/3QK3 w - - 0 1', arrows: [['d1', 'd5', 'r'], ['e6', 'd5', 'y']] },
+        { text: 'Your queen can capture on <b>g4</b> or on <b>d5</b>. One of those pieces is defended — <b>grab the free one!</b>', fen: '4k3/pp3ppp/4p3/3n4/6b1/8/PP3PPP/3QK3 w - - 0 1', task: { solution: ['d1g4|d1a4'] }, hint: 'The bishop on g4 has no defenders. The knight on d5 does.' },
+        { text: 'The golden rule: before <b>every</b> move, ask two questions. <b>Can my opponent take something for free?</b> And <b>can I?</b> This one habit wins more games than any opening.', fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1' },
+      ],
+    },
+    {
+      id: 'develop', level: 'Beginner', category: 'Strategy', icon: '🚀', title: 'Develop & castle',
+      summary: 'Get your pieces on stage fast.',
+      steps: [
+        { text: 'In the opening, almost every move should bring a <b>new piece</b> into play — knights and bishops first, then castle. Every piece you develop is another musician on stage!', fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', arrows: [['g1', 'f3'], ['b1', 'c3'], ['f1', 'c4']] },
+        { text: 'Both sides have played a pawn and a knight. <b>Develop a new piece</b> towards the centre.', fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3', task: { solution: ['f1c4|f1b5|b1c3|d2d4'] }, hint: 'Your bishop on f1 or knight on b1 are waiting to play.' },
+        { text: 'Black brought the queen out too early. <b>Develop a knight and attack the queen</b> at the same time!', fen: 'rnb1kbnr/pppp1ppp/8/4p3/4P2q/2N5/PPPP1PPP/R1BQKBNR w KQkq - 2 3', task: { solution: ['g1f3'] }, hint: 'Which knight move hits the queen on h4?' },
+        { text: 'Your pieces are out — now <b>castle</b> to keep your king safe.', fen: 'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 1 5', task: { solution: ['e1g1'] }, hint: 'Move the king two squares towards the h1 rook.' },
+      ],
+    },
+    {
+      id: 'rookmate', level: 'Beginner', category: 'Endgame', icon: '🏰', title: 'Checkmate with king & rook',
+      summary: 'The rook cuts off, the king walks up.',
+      steps: [
+        { text: 'With king and rook against a lone king, the rook <b>cuts the board in two</b>, and your king walks up to help. Here the rook on the d-file traps the black king on the left side. Mate always happens on the edge.', fen: '8/8/2k5/8/8/8/8/3RK3 w - - 0 1', arrows: [['d1', 'd8']] },
+        { text: 'The kings stand face to face. <b>Mate in one!</b>', fen: '6k1/8/6K1/8/8/8/8/R7 w - - 0 1', task: { solution: ['a1a8'], mate: 1 }, hint: 'Your king covers the 7th rank. Use the rook on the 8th.' },
+        { text: '<b>Mate in two.</b> No check yet — make a quiet <b>waiting move</b> with the rook. The black king will have to step in front of yours.', fen: '1k6/8/2K5/8/8/8/8/7R w - - 0 1', task: { solution: ['h1a1', 'b8c8', 'a1a8'], mate: 2 }, hint: 'Put the rook on the a-file first.' },
+      ],
+    },
+    {
+      id: 'discovered', level: 'Intermediate', category: 'Tactics', icon: '💥', title: 'Discovered attacks',
+      summary: 'Move one piece, unleash another.',
+      steps: [
+        { text: 'A <b>discovered attack</b>: one piece moves out of the way and reveals an attack by the piece behind it. Here your knight blocks your own rook from hitting the black queen.', fen: 'r6k/ppp1qppp/8/4N3/8/8/PPP2PPP/3QR1K1 w - - 0 1', arrows: [['e1', 'e7', 'r']] },
+        { text: 'Move the knight <b>with check</b>. Black must deal with the check — and then your rook takes the queen.', fen: 'r6k/ppp1qppp/8/4N3/8/8/PPP2PPP/3QR1K1 w - - 0 1', task: { solution: ['e5g6', 'h7g6', 'e1e7'] }, hint: 'Which knight move checks the king on h8?' },
+        { text: '<b>Discovered check</b> is the deadliest kind: the opponent has to answer the check, so they never get time to save the piece you attacked.', fen: 'r6k/ppp1qppp/6N1/8/8/8/PPP2PPP/3QR1K1 b - - 1 1', arrows: [['g6', 'h8', 'y'], ['e1', 'e7', 'r']] },
+      ],
+    },
+    {
+      id: 'doublecheck', level: 'Intermediate', category: 'Tactics', icon: '⚡', title: 'Double check',
+      summary: 'Two checks at once — only the king can move.',
+      steps: [
+        { text: 'In a <b>double check</b>, two pieces give check at the same time. Blocking or capturing can\'t stop both — <b>the king must move</b>. If it has nowhere to go, it\'s checkmate, like here.', fen: 'rnbqkbnr/pppp1ppp/3N4/8/8/8/PPP2PPP/R1B1R1K1 b kq - 1 1', arrows: [['d6', 'e8', 'y'], ['e1', 'e8', 'r']] },
+        { text: 'Recreate it yourself: <b>mate in one</b> with a double check!', fen: 'rnbqkbnr/pppp1ppp/8/8/4N3/8/PPP2PPP/R1B1R1K1 w kq - 0 1', task: { solution: ['e4d6'], mate: 1 }, hint: 'The knight jumps with check and unmasks the rook.' },
+        { text: '<b>Mate in two.</b> Start with a double check — the king has to run — then finish it off.', fen: '4k3/1qpp1ppp/2p5/8/4N3/8/PP3PPP/4R1K1 w - - 0 1', task: { solution: ['e4d6', 'e8d8', 'e1e8'], mate: 2 }, hint: 'Knight to d6 checks twice. Then the rook visits the 8th rank.' },
+      ],
+    },
+    {
+      id: 'defender', level: 'Intermediate', category: 'Tactics', icon: '🛡', title: 'Remove the defender',
+      summary: 'Take out the guard, then strike.',
+      steps: [
+        { text: 'When one enemy piece has an important job — like guarding a square next to the king — <b>capture it or chase it away</b>, and the job is left undone. Here the knight on f6 is the only guard of h7.', fen: 'r2q1rk1/ppp2ppp/5n2/6B1/7Q/3B4/PPP2PPP/R4RK1 w - - 0 1', arrows: [['f6', 'h7', 'y'], ['h4', 'h7', 'r'], ['d3', 'h7', 'r']] },
+        { text: 'Your queen and bishop both aim at h7, but the knight defends it. <b>Remove the defender!</b> (If Black recaptures with the g-pawn, Qxh7 is checkmate.)', fen: 'r2q1rk1/ppp2ppp/5n2/6B1/7Q/3B4/PPP2PPP/R4RK1 w - - 0 1', task: { solution: ['g5f6'] }, hint: 'Your bishop on g5 can capture the knight.' },
+      ],
+    },
+    {
+      id: 'square', level: 'Intermediate', category: 'Endgame', icon: '🏃', title: 'Pawn races & opposition',
+      summary: 'The rule of the square and facing kings.',
+      steps: [
+        { text: '<b>The rule of the square:</b> draw a square from the pawn to its promotion rank. If the enemy king can step inside it, the king catches the pawn. If not — the pawn queens!', fen: '8/8/8/P3k3/8/8/8/6K1 w - - 0 1', marks: ['a5', 'b5', 'c5', 'd5', 'a6', 'b6', 'c6', 'd6', 'a7', 'b7', 'c7', 'd7', 'a8', 'b8', 'c8', 'd8'] },
+        { text: 'The black king is one step from the square. <b>Push the pawn</b> before it gets inside — the square shrinks with every push!', fen: '8/8/8/P3k3/8/8/8/6K1 w - - 0 1', task: { solution: ['a5a6'] }, hint: 'Don\'t move the king — every tempo counts.' },
+        { text: '<b>Opposition:</b> when kings face each other with one square between them, the player who does <b>not</b> have to move holds the opposition. Here Black must step aside, and White\'s king marches forward to escort the pawn.', fen: '8/8/4k3/8/4K3/4P3/8/8 b - - 0 1', arrows: [['e4', 'e6', 'y']] },
+      ],
+    },
+    /* GENERATED-LESSONS-START */
+    {"id": "mate2drill", "level": "Intermediate", "category": "Attack", "icon": "🥁", "title": "Mate-in-two drill", "summary": "Three real-game mates in two moves.", "steps": [{"text": "Mate in two means: your move, any reply, then checkmate. <b>Checks, captures, threats</b> — look at every forcing move first, and ask what the defender can do after each one.", "fen": "rq1k3r/p1p2pp1/2Q1b2p/3n4/P2P4/2p1B3/2P1PPPP/3K1B1R b - - 2 18"}, {"text": "<b>Black to move — mate in 2.</b> Find the forcing start.", "fen": "rq1k3r/p1p2pp1/2Q1b2p/3n4/P2P4/2p1B3/2P1PPPP/3K1B1R b - - 2 18", "task": {"solution": ["d5e3", "d1e1", "b8b1"], "mate": 2}, "hint": "Start with a check using your knight."}, {"text": "<b>White to move — mate in 2.</b> Your opponent has only a few replies. Make sure every one of them loses.", "fen": "2bk1b1r/r1n1N1p1/p1Q1Pp2/3P3p/2B5/B1PP2P1/5P1P/1R4K1 w - - 1 25", "task": {"solution": ["b1b8", "g7g6", "b8c8"], "mate": 2}, "hint": "The first move is a quiet rook move — no check, no capture."}, {"text": "<b>Black to move — mate in 2.</b> Last one of the drill — finish it in style!", "fen": "4r1kr/p2p1pp1/Bpp5/7p/P4b2/BbNK4/6PP/R2n3R b - - 3 26", "task": {"solution": ["d1f2", "d3d4", "f4e3"], "mate": 2}, "hint": "Start with a check using your knight."}]},
+    {"id": "mate3", "level": "Advanced", "category": "Attack", "icon": "👑", "title": "Mate in three", "summary": "Calculate a full forcing combination.", "steps": [{"text": "A mate in three is a real combination: you need to see <b>five half-moves ahead</b>. The trick: start with forcing moves that leave the king fewer and fewer squares, and check every defence.", "fen": "2r5/5kp1/4p1bp/p2p4/1p1P1P2/1P6/qRP3PP/2K2B1R b - - 1 25"}, {"text": "<b>Black to move — mate in 3.</b> Take your time and calculate before you touch a piece.", "fen": "2r5/5kp1/4p1bp/p2p4/1p1P1P2/1P6/qRP3PP/2K2B1R b - - 1 25", "task": {"solution": ["c8c2", "c1d1", "a2a1", "b2b1", "a1b1"], "mate": 3}, "hint": "Start with a check using your rook."}, {"text": "<b>Black to move — mate in 3.</b> Look for the move that takes away the king's escape squares.", "fen": "4k3/Bpp4Q/p1nb4/3n1qpK/2p5/8/PPb1N1PP/R4BR1 b - - 1 22", "task": {"solution": ["d5f6", "h5h6", "d6f8", "h7g7", "f5g6"], "mate": 3}, "hint": "Start with a check using your knight."}, {"text": "<b>Black to move — mate in 3.</b> The final boss. Calculate it to the end!", "fen": "r3k2r/p5p1/1q1b1n1p/2pp1p2/3P1pn1/BPP1Pb1K/P5PP/R3QBR1 b kq - 1 22", "task": {"solution": ["g4f2", "e1f2", "f3g4", "h3h4", "g7g5"], "mate": 3}, "hint": "Start with a check using your knight."}]},
+    {"id": "quiet", "level": "Advanced", "category": "Tactics", "icon": "🤫", "title": "Quiet killer moves", "summary": "The strongest move isn't always a check.", "steps": [{"text": "Strong players also look for <b>quiet moves</b>: no check, no capture — but they create a threat your opponent can't meet. They are the hardest tactics to spot.", "fen": "4q1k1/3n1pb1/1p2p2p/1N5P/2rP1P2/P3B3/RP3P1R/5K2 w - - 5 34"}, {"text": "<b>White to move.</b> Find the quiet move that wins material.", "fen": "4q1k1/3n1pb1/1p2p2p/1N5P/2rP1P2/P3B3/RP3P1R/5K2 w - - 5 34", "task": {"solution": ["b5d6", "e8a8", "d6c4"]}, "hint": "The first move is a quiet knight move — no check, no capture."}, {"text": "<b>White to move.</b> No checks needed — find the threat that can't be parried.", "fen": "r1b5/pp1n2pp/4Q3/2p1p1k1/3P1r1q/P7/1P2PPPP/1RB1KBR1 w - - 1 22", "task": {"solution": ["g2g3", "g5h5", "g3h4"]}, "hint": "The first move is a quiet pawn move — no check, no capture."}, {"text": "<b>White to move.</b> One more. Think about what you threaten, not just what you attack.", "fen": "2rqkbnr/1ppnp1pp/p2p2b1/5p2/3PPN2/2N5/PPP2PPP/R1BQKB1R w KQk - 2 8", "task": {"solution": ["f4e6", "f5e4", "e6d8"]}, "hint": "The first move is a quiet knight move — no check, no capture."}]},
+    {"id": "forcing", "level": "Advanced", "category": "Tactics", "icon": "🎯", "title": "Calculate forcing lines", "summary": "Check, reply, and the follow-up that wins.", "steps": [{"text": "A <b>forcing line</b> starts with a check, so your opponent has very few replies. Calculate each reply and find the follow-up that wins material.", "fen": "1r3rk1/Qpp3p1/3bp3/6qp/4P2P/2PP4/P5P1/R4BKR b - - 0 24"}, {"text": "<b>Black to move.</b> Start with a check, then cash in.", "fen": "1r3rk1/Qpp3p1/3bp3/6qp/4P2P/2PP4/P5P1/R4BKR b - - 0 24", "task": {"solution": ["d6c5", "a7c5", "g5c5"]}, "hint": "Start with a check using your bishop."}, {"text": "<b>Black to move.</b> The check is just the opening act — what comes next?", "fen": "2b1k2r/Q1p2p1p/8/1p1p2p1/1P4n1/P1q4P/2P1P1P1/1R1K1BR1 b - - 2 23", "task": {"solution": ["g4e3", "a7e3", "c3e3"]}, "hint": "Start with a check using your knight."}, {"text": "<b>White to move.</b> Calculate the whole sequence before moving.", "fen": "r1b2b1r/pp1k1p1p/2qp2p1/2p1pn2/8/1P2BN2/P1P1BPPP/R2QKR2 w Q - 0 15", "task": {"solution": ["f3e5", "d7e8", "e5c6"]}, "hint": "Start with a check using your knight."}]},
+    {"id": "sacrifice", "level": "Advanced", "category": "Attack", "icon": "🔥", "title": "Sacrifice to win", "summary": "Give something up to get much more back.", "steps": [{"text": "A <b>sacrifice</b> gives away material on purpose — to rip open the king, deflect a defender or set up a bigger win. Before you sacrifice, calculate exactly what you get back!", "fen": "r1k2b2/1p4p1/p2p3q/P3p3/2PpPn2/3P4/1PNB1r1P/1RK2B1R b - - 0 30"}, {"text": "<b>Black to move.</b> Something has to be given up here. Find the sacrifice that works.", "fen": "r1k2b2/1p4p1/p2p3q/P3p3/2PpPn2/3P4/1PNB1r1P/1RK2B1R b - - 0 30", "task": {"solution": ["f4d3", "c1d1", "h6d2"], "mate": 2}, "hint": "Start with a check using your knight."}, {"text": "<b>Black to move.</b> Be brave — but calculate it first!", "fen": "rnb1k1nr/pp1pbppp/2p1pq2/7P/6P1/2N2P2/PPPPP3/R1BQKBNR b KQkq - 0 5", "task": {"solution": ["f6h4", "h1h4", "e7h4"], "mate": 2}, "hint": "Start with a check using your queen."}, {"text": "<b>Black to move.</b> The last sacrifice. Go for it!", "fen": "2k2b1r/1qn1pppp/1p6/2p4r/p7/P2PBQN1/1PP2PK1/2R1R3 b - - 0 25", "task": {"solution": ["h5h2", "g2h2", "b7f3"]}, "hint": "Start with a check using your rook."}]},
+    {"id": "endtactics", "level": "Advanced", "category": "Endgame", "icon": "🎻", "title": "Endgame tactics", "summary": "Few pieces, sharp tricks.", "steps": [{"text": "With few pieces left, every tempo counts. Tactics still decide endgames: <b>forks, checks and mating nets</b> appear even with just a couple of pieces.", "fen": "8/6kp/3R4/PR2pP2/8/4KP2/r7/8 w - - 1 40"}, {"text": "<b>White to move.</b> Find the winning idea.", "fen": "8/6kp/3R4/PR2pP2/8/4KP2/r7/8 w - - 1 40", "task": {"solution": ["b5b7", "g7f8", "d6d8"], "mate": 2}, "hint": "Start with a check using your rook."}, {"text": "<b>Black to move.</b> Few pieces — but a sharp trick is hiding here.", "fen": "4k3/2p1ppb1/8/p7/7p/P4q2/RP5P/4R1K1 b - - 1 40", "task": {"solution": ["g7d4", "e1e3", "d4e3"], "mate": 2}, "hint": "Start with a check using your bishop."}, {"text": "<b>Black to move.</b> Calculate the line to the end.", "fen": "4k3/2p1P1r1/1R4p1/3P1p1p/5P2/8/1p1r4/6K1 b - - 0 42", "task": {"solution": ["c7b6", "d5d6", "b2b1q"], "mate": 2}, "hint": "Start by capturing with your pawn."}]},
+    /* GENERATED-LESSONS-END */
   ];
+  const LEVEL = { board: 'Beginner', pawn: 'Beginner', knight: 'Beginner', sliders: 'Beginner', king: 'Beginner', special: 'Beginner', mate: 'Beginner', values: 'Beginner', opening: 'Beginner', endgame: 'Beginner', forks: 'Intermediate', pins: 'Intermediate', patterns: 'Intermediate' };
+  LESSONS.forEach((l) => { l.level = l.level || LEVEL[l.id] || 'Intermediate'; });
+  const ORDER = { Beginner: 0, Intermediate: 1, Advanced: 2 };
+  const SEQ = ['board', 'pawn', 'knight', 'sliders', 'king', 'special', 'mate', 'values', 'hanging', 'develop', 'opening', 'rookmate', 'endgame',
+    'forks', 'pins', 'discovered', 'doublecheck', 'defender', 'patterns', 'mate2drill', 'square', 'forcing', 'quiet', 'sacrifice', 'endtactics', 'mate3'];
+  const pos = (l) => (SEQ.indexOf(l.id) < 0 ? 99 : SEQ.indexOf(l.id));
+  LESSONS.sort((a, b) => ORDER[a.level] - ORDER[b.level] || pos(a) - pos(b));
   if (typeof module !== 'undefined' && module.exports) module.exports = LESSONS;
   else global.LESSONS = LESSONS;
 })(typeof window !== 'undefined' ? window : globalThis);

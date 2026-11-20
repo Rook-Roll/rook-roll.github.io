@@ -331,27 +331,43 @@
   }
 
   /* ---------------- Lessons ---------------- */
+  const LEVELS = ['Beginner', 'Intermediate', 'Advanced'];
+  const LEVEL_ICON = { Beginner: '🌱', Intermediate: '🔥', Advanced: '👑' };
+  function levelSeg(current, counts) {
+    return `<div class="chips level-chips">${['All', ...LEVELS].map((l) => `<button class="chip ${current === l ? 'active' : ''}" data-level="${l}">${l === 'All' ? '🎸 All levels' : LEVEL_ICON[l] + ' ' + l}${counts ? ` <span class="cnt">${counts[l]}</span>` : ''}</button>`).join('')}</div>`;
+  }
+
   function viewLessons(view) {
-    const cats = [...new Set(LESSONS.map((l) => l.category))];
+    let level = prefs.lessonLevel || 'All';
     const done = Object.keys(progress.lessons).length;
-    let html = `<div class="band-head yellow"><div><h1>The Setlist</h1><p>${LESSONS.length} lessons, played in order like a concert. Each one mixes quick explanations with moves you make yourself.</p><span class="pill">${done} of ${LESSONS.length} rocked</span></div><div style="width:110px">${Coach.svg('happy')}</div></div>`;
-    let n = 0;
-    for (const cat of cats) {
-      html += `<div class="section-title"><h2>${esc(cat)}</h2></div><div class="setlist">`;
-      for (const l of LESSONS.filter((x) => x.category === cat)) {
-        n++;
-        const isDone = !!progress.lessons[l.id];
-        const step = progress.lessonStep[l.id] || 0;
-        const status = isDone ? '✓ Done' : step > 0 ? `${step + 1}/${l.steps.length}` : `${l.steps.length} steps`;
-        html += `<div class="track ${isDone ? 'done' : ''}" data-id="${l.id}" tabindex="0" role="link"><div class="ico">${l.icon}</div><div><div class="no">Track ${n}</div><h3>${esc(l.title)}</h3><p>${esc(l.summary)}</p></div><div class="len">${status}</div></div>`;
+    const counts = { All: LESSONS.length };
+    LEVELS.forEach((l) => { counts[l] = LESSONS.filter((x) => x.level === l).length; });
+    view.innerHTML = `<div class="band-head yellow"><div><h1>The Setlist</h1><p>${LESSONS.length} lessons across three levels, played in order like a concert. Each mixes quick explanations with moves you make yourself.</p><span class="pill">${done} of ${LESSONS.length} rocked</span></div><div style="width:110px">${Coach.svg('happy')}</div></div>
+      <div class="section-title"><h2>Pick your level</h2></div>${levelSeg(level, counts)}<div class="lesson-list"></div>`;
+    const list = $('.lesson-list', view);
+    function draw() {
+      let html = '';
+      for (const lv of LEVELS) {
+        const ls = LESSONS.filter((x) => x.level === lv);
+        if (!ls.length || (level !== 'All' && level !== lv)) continue;
+        const doneHere = ls.filter((l) => progress.lessons[l.id]).length;
+        html += `<div class="section-title"><h2>${LEVEL_ICON[lv]} ${lv}</h2><span class="muted">${doneHere}/${ls.length} done</span></div><div class="setlist">`;
+        for (const l of ls) {
+          const isDone = !!progress.lessons[l.id];
+          const step = progress.lessonStep[l.id] || 0;
+          const status = isDone ? '✓ Done' : step > 0 ? `${step + 1}/${l.steps.length}` : `${l.steps.length} steps`;
+          html += `<div class="track ${isDone ? 'done' : ''}" data-id="${l.id}" tabindex="0" role="link"><div class="ico">${l.icon}</div><div><div class="no">Track ${LESSONS.indexOf(l) + 1} · ${esc(l.category)}</div><h3>${esc(l.title)}</h3><p>${esc(l.summary)}</p></div><div class="len">${status}</div></div>`;
+        }
+        html += '</div>';
       }
-      html += '</div>';
+      list.innerHTML = html;
+      $$('.track', list).forEach((el) => {
+        el.onclick = () => (location.hash = '#lesson-' + el.dataset.id);
+        el.onkeydown = (e) => { if (e.key === 'Enter') el.click(); };
+      });
     }
-    view.innerHTML = html;
-    $$('.track', view).forEach((el) => {
-      el.onclick = () => (location.hash = '#lesson-' + el.dataset.id);
-      el.onkeydown = (e) => { if (e.key === 'Enter') el.click(); };
-    });
+    $$('[data-level]', view).forEach((c) => (c.onclick = () => { level = c.dataset.level; prefs.lessonLevel = level; savePrefs(); $$('[data-level]', view).forEach((x) => x.classList.toggle('active', x === c)); draw(); }));
+    draw();
   }
 
   function trainerLayout(view, panelHtml) {
@@ -470,40 +486,68 @@
 
   /* ---------------- Puzzles ---------------- */
   function recommendedPuzzle(excludeId) {
-    const unsolved = PUZZLES.filter((p) => !(progress.puzzles[p.id] && progress.puzzles[p.id].solved) && p.id !== excludeId);
+    const lv = prefs.pzLevel && prefs.pzLevel !== 'All' ? prefs.pzLevel : null;
+    const inLevel = (p) => !lv || p.level === lv;
+    const unsolved = PUZZLES.filter((p) => inLevel(p) && !(progress.puzzles[p.id] && progress.puzzles[p.id].solved) && p.id !== excludeId);
     if (!unsolved.length) {
-      const pool = PUZZLES.filter((p) => p.id !== excludeId);
-      return pool[Math.floor(Math.random() * pool.length)];
+      const pool = PUZZLES.filter((p) => inLevel(p) && p.id !== excludeId);
+      return pool[Math.floor(Math.random() * pool.length)] || PUZZLES[0];
     }
     unsolved.sort((a, b) => Math.abs(a.rating - progress.rating) - Math.abs(b.rating - progress.rating));
     return unsolved[0];
   }
 
   function viewPuzzles(view) {
-    const themes = ['All', ...new Set(PUZZLES.flatMap((p) => p.themes))];
-    let filter = 'All';
+    let level = prefs.pzLevel || 'All';
+    let theme = 'All';
+    let shown = 48;
     const solved = solvedCount();
+    const counts = { All: PUZZLES.length };
+    LEVELS.forEach((l) => { counts[l] = PUZZLES.filter((p) => p.level === l).length; });
     view.innerHTML = `
       <div class="band-head mint">
-        <div><h1>Jam Session</h1><p>Find the best move. Nail it first try to raise your rating — hints and wrong notes cost points.</p>
+        <div><h1>Jam Session</h1><p>${PUZZLES.length} puzzles from beginner to advanced. Nail one first try to raise your rating — hints and wrong notes cost points.</p>
           <button class="btn primary" id="startPz">▶ Start jamming</button></div>
         <div style="text-align:right"><div class="muted">Puzzle rating</div><div class="rating-big">${progress.rating}</div><div class="muted">${solved}/${PUZZLES.length} solved</div></div>
       </div>
-      <div class="section-title"><h2>All puzzles</h2></div>
-      <div class="chips">${themes.map((t) => `<button class="chip ${t === 'All' ? 'active' : ''}" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
-      <div class="puzzle-grid"></div>`;
+      <div class="section-title"><h2>Level</h2><span class="muted">🌱 under 800 · 🔥 800–1299 · 👑 1300+</span></div>
+      ${levelSeg(level, counts)}
+      <div class="section-title"><h2>Theme</h2></div>
+      <div class="chips theme-chips"></div>
+      <div class="puzzle-grid"></div>
+      <div class="row" style="justify-content:center;margin-top:18px"><button class="btn" id="more">Show more puzzles</button></div>`;
     const grid = $('.puzzle-grid', view);
+    const inLevel = (p) => level === 'All' || p.level === level;
+    function drawThemes() {
+      const pool = PUZZLES.filter(inLevel);
+      const tc = {};
+      pool.forEach((p) => p.themes.forEach((t) => { tc[t] = (tc[t] || 0) + 1; }));
+      const themes = Object.keys(tc).sort((a, b) => tc[b] - tc[a]);
+      if (theme !== 'All' && !tc[theme]) theme = 'All';
+      $('.theme-chips', view).innerHTML = ['All', ...themes].map((t) => `<button class="chip ${t === theme ? 'active' : ''}" data-t="${esc(t)}">${esc(t)} <span class="cnt">${t === 'All' ? pool.length : tc[t]}</span></button>`).join('');
+      $$('.theme-chips .chip', view).forEach((c) => (c.onclick = () => { theme = c.dataset.t; shown = 48; drawThemes(); draw(); }));
+    }
     function draw() {
-      grid.innerHTML = PUZZLES.filter((p) => filter === 'All' || p.themes.includes(filter)).map((p) => {
+      const list = PUZZLES.filter((p) => inLevel(p) && (theme === 'All' || p.themes.includes(theme)));
+      grid.innerHTML = list.slice(0, shown).map((p) => {
         const rec = progress.puzzles[p.id];
         const st = rec && rec.solved ? (rec.clean ? '<span class="pill green">✓</span>' : '<span class="pill gold">✓</span>') : rec ? '<span class="pill">tried</span>' : '';
         return `<div class="card pz-card ${rec && rec.solved ? 'solved' : ''}" data-id="${p.id}">${Board.miniBoard(p.fen, p.fen.split(' ')[1])}
-          <div class="t">${esc(p.title)}</div><div class="meta"><span class="muted">★ ${p.rating}</span>${st}</div></div>`;
-      }).join('');
+          <div class="t">${esc(p.title)}</div><div class="meta"><span class="muted">${LEVEL_ICON[p.level]} ★ ${p.rating}</span>${st}</div></div>`;
+      }).join('') || '<div class="muted">No puzzles match these filters.</div>';
       $$('.pz-card', grid).forEach((el) => (el.onclick = () => (location.hash = '#puzzle-' + el.dataset.id)));
+      const more = $('#more', view);
+      more.style.display = list.length > shown ? '' : 'none';
+      more.textContent = `Show more puzzles (${list.length - shown} left)`;
     }
-    $$('.chip', view).forEach((c) => (c.onclick = () => { filter = c.dataset.t; $$('.chip', view).forEach((x) => x.classList.toggle('active', x === c)); draw(); }));
+    $$('.level-chips [data-level]', view).forEach((c) => (c.onclick = () => {
+      level = c.dataset.level; prefs.pzLevel = level; savePrefs(); shown = 48;
+      $$('.level-chips [data-level]', view).forEach((x) => x.classList.toggle('active', x === c));
+      drawThemes(); draw();
+    }));
+    $('#more', view).onclick = () => { shown += 48; draw(); };
     $('#startPz', view).onclick = () => (location.hash = '#puzzle-' + recommendedPuzzle().id);
+    drawThemes();
     draw();
   }
 
@@ -514,7 +558,7 @@
     const goal = pz.mate ? `Find checkmate in ${pz.mate}.` : 'Find the best move.';
     const board = trainerLayout(view, `
       <div class="crumbs"><a href="#puzzles">Jam Session</a> / #${num}</div>
-      <div class="row spread" style="align-items:center"><h2 style="margin:0">${esc(pz.title)}</h2><span class="pill">★ ${pz.rating}</span></div>
+      <div class="row spread" style="align-items:center"><h2 style="margin:0">${esc(pz.title)}</h2><span class="pill">${LEVEL_ICON[pz.level]} ${pz.level} · ★ ${pz.rating}</span></div>
       ${coachBubble(`<b>${colorName(side)} to move.</b> ${goal}`, 'smirk')}
       <div class="feedback info"></div>
       <div class="row" style="align-items:center"><span class="muted">Your rating:</span> <b class="rt">${progress.rating}</b><span class="delta"></span></div>

@@ -183,6 +183,20 @@
   const Engine = {
     evaluate,
     bestMove,
+    /* Score every legal move (side-to-move perspective), best first. Used to check puzzles have one clear answer. */
+    scoreMoves(chess, depth = 3, timeMs = 4000) {
+      const ch = new Chess(chess.fen());
+      const ctx = { nodes: 0, stop: false, deadline: now() + timeMs };
+      const out = [];
+      for (const m of ch._legal()) {
+        ch._make(m);
+        const s = -search(ch, depth - 1, -INF, INF, 1, ctx);
+        ch._unmake(m);
+        out.push({ uci: toUci(m), score: s });
+      }
+      out.sort((a, b) => b.score - a.score);
+      return ctx.stop ? null : out;
+    },
     mateMove(chess, n) { return toUci(mateIn(new Chess(chess.fen()), n)); },
     // after the attacker's move: does every defence still lose within n attacker moves?
     stillMating(chess, n) { return defenderLoses(new Chess(chess.fen()), n); },
