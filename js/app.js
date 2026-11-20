@@ -248,6 +248,8 @@
     const name = cut < 0 ? h : h.slice(0, cut);
     const arg = cut < 0 ? '' : h.slice(cut + 1);
     const navKey = name in NAV_FOR ? NAV_FOR[name] : name;
+    const TITLES = { lessons: 'Chess Lessons', lesson: 'Lesson', puzzles: 'Chess Puzzles', puzzle: 'Puzzle', play: 'Play Chess', games: 'Chess Mini-games', game: 'Mini-game', customize: 'Customize' };
+    document.title = TITLES[name] ? `${TITLES[name]} · Rook & Roll` : 'Rook & Roll — Free Chess Lessons, Puzzles & Games for All Levels';
     $$('.nav a').forEach((a) => a.classList.toggle('active', a.dataset.r === navKey));
     $('#customBtn').classList.toggle('active', name === 'customize');
     const view = $('#view');

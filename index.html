@@ -3,16 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rook & Roll — Chess that rocks</title>
-  <meta name="description" content="Rook & Roll: learn chess with interactive lessons, puzzles, mini-games and Rocco — a rock-star rook coach who adapts to you. Free, no sign-up." />
+  <title>Rook &amp; Roll — Free Chess Lessons, Puzzles &amp; Games for All Levels</title>
+  <meta name="description" content="Learn chess free with Rook &amp; Roll: 26 interactive lessons and 235 puzzles for beginner, intermediate and advanced players, pass &amp; play with a friend on one device, an adaptive computer coach and fun chess mini-games. No sign-up." />
+  <link rel="canonical" href="https://rook-roll.github.io/" />
   <meta name="theme-color" content="#ff4d5e" />
-  <meta property="og:title" content="Rook & Roll — Chess that rocks" />
-  <meta property="og:description" content="Lessons, puzzles, pass & play, mini-games and Rocco, your rock-star chess coach." />
+  <meta name="author" content="Dinmukhammed" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Rook &amp; Roll" />
+  <meta property="og:url" content="https://rook-roll.github.io/" />
+  <meta property="og:title" content="Rook &amp; Roll — Chess that rocks" />
+  <meta property="og:description" content="Free chess lessons, 235 puzzles, pass &amp; play with a friend, mini-games and Rocco — a rock-star coach who adapts to your level." />
+  <meta property="og:image" content="https://rook-roll.github.io/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rook &amp; Roll — Rocco the rock-star rook on a chessboard stage. Free lessons, puzzles and games." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Rook &amp; Roll — Chess that rocks" />
+  <meta name="twitter:description" content="Free chess lessons, puzzles, pass &amp; play and mini-games with a rock-star coach." />
+  <meta name="twitter:image" content="https://rook-roll.github.io/img/og-image.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="Rook &amp; Roll" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Rook & Roll",
+    "alternateName": "Rook and Roll Chess",
+    "url": "https://rook-roll.github.io/",
+    "description": "Free chess training: interactive lessons and puzzles for beginner, intermediate and advanced players, pass and play with a friend on one device, an adaptive computer coach and chess mini-games.",
+    "applicationCategory": "EducationalApplication",
+    "genre": "Chess",
+    "operatingSystem": "Any (web browser)",
+    "inLanguage": "en",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "image": "https://rook-roll.github.io/img/og-image.png",
+    "author": { "@type": "Person", "name": "Dinmukhammed" }
+  }
+  </script>
+  <link rel="icon" type="image/png" sizes="192x192" href="img/icon-192.png" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 124'><path d='M14 116 Q14 103 26 101 H74 Q86 103 86 116 Z M28 101 L31 47 H69 L72 101 Z M19 48 V16 H33 V26 H43 V16 H57 V26 H67 V16 H81 V48 Z' fill='%23ffd23f' stroke='%230e0c12' stroke-width='5' stroke-linejoin='round'/><rect x='31' y='59' width='17' height='12' rx='4'/><rect x='52' y='59' width='17' height='12' rx='4'/><path d='M30 49 H70 L70 56 H30Z' fill='%23ff4d5e'/></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
 </head>
 <body>
   <header class="topbar">
@@ -32,17 +67,35 @@
       <button class="icon-btn" id="soundBtn" title="Sound effects on/off" aria-label="Sound effects on or off">🔊</button>
     </div>
   </header>
-  <main id="view"></main>
-  <footer><b>Rook &amp; Roll</b> · chess that rocks · created by Dinmukhammed · progress is saved in this browser</footer>
+  <main id="view">
+    <!-- Readable content for search engines and visitors without JavaScript; the app replaces it on load. -->
+    <section class="seo-intro">
+      <h1>Rook &amp; Roll — free chess lessons, puzzles and games</h1>
+      <p>Rook &amp; Roll is a free chess training site for every level. Learn the rules step by step, solve tactics puzzles, play a friend on one device, and get coached by Rocco, a rock-star rook who reviews your moves and adapts to your skill.</p>
+      <h2>Chess lessons for beginners to advanced players</h2>
+      <p>26 interactive lessons: how the pieces move, check and checkmate, castling and en passant, piece values, not hanging pieces, opening principles, forks, pins and skewers, discovered attacks, double check, removing the defender, mating patterns, king and pawn endgames, forcing lines, quiet moves, sacrifices and mate in three.</p>
+      <h2>235 chess puzzles</h2>
+      <p>Tactics puzzles rated from 430 to 1850, filterable by level and theme: mate in 1, mate in 2, mate in 3, forks, back-rank mates, smothered mates, sacrifices and endgames. Your puzzle rating goes up as you solve.</p>
+      <h2>Play chess with a friend on one device</h2>
+      <p>Pass and play on the same phone, tablet or computer, with chess clocks and an auto-flipping board — or play the computer coach on Beginner, Casual, Club, Strong or Adaptive level.</p>
+      <h2>Chess mini-games</h2>
+      <p>Secret Queen, Pawn Wars, Coordinate Rush and Knight Sprint — fun ways to sharpen board vision and tactics.</p>
+      <p><a href="#lessons">Start a lesson</a> · <a href="#puzzles">Solve puzzles</a> · <a href="#play-new">Play a friend</a> · <a href="#games">Mini-games</a></p>
+    </section>
+  </main>
+  <footer>
+    <p><b>Rook &amp; Roll</b> · chess that rocks · created by Dinmukhammed</p>
+    <p class="about">A free chess training site: chess lessons for beginners and improvers, tactics puzzles, pass &amp; play chess with a friend on one device, an adaptive computer opponent and chess mini-games. No account needed — your progress is saved in this browser.</p>
+  </footer>
 
-  <script src="js/chess.js?v=3"></script>
-  <script src="js/engine.js?v=3"></script>
-  <script src="js/data/lessons.js?v=3"></script>
-  <script src="js/data/puzzles.js?v=3"></script>
-  <script src="js/board.js?v=3"></script>
-  <script src="js/coach.js?v=3"></script>
-  <script src="js/customize.js?v=3"></script>
-  <script src="js/games.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/chess.js?v=4"></script>
+  <script src="js/engine.js?v=4"></script>
+  <script src="js/data/lessons.js?v=4"></script>
+  <script src="js/data/puzzles.js?v=4"></script>
+  <script src="js/board.js?v=4"></script>
+  <script src="js/coach.js?v=4"></script>
+  <script src="js/customize.js?v=4"></script>
+  <script src="js/games.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>

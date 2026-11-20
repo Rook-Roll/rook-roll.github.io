@@ -1,5 +1,7 @@
 # Rook & Roll — chess that rocks 🎸
 
+**▶ Play now: https://rook-roll.github.io**
+
 A free chess training site that runs entirely in the browser — no sign-up. Coached by **Rocco**, a rock-star rook.
 
 - **The Setlist** — 26 interactive lessons in three levels (Beginner, Intermediate, Advanced)

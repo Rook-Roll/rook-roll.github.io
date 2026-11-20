@@ -1,0 +1,17 @@
+{
+  "name": "Rook & Roll — Chess that rocks",
+  "short_name": "Rook & Roll",
+  "description": "Free chess lessons, puzzles, pass & play and mini-games with Rocco, your rock-star coach.",
+  "start_url": "./#home",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#16131b",
+  "theme_color": "#ff4d5e",
+  "categories": ["education", "games"],
+  "icons": [
+    { "src": "img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

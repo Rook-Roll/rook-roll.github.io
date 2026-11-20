@@ -477,6 +477,12 @@ input[type='range'] { width: 100%; accent-color: var(--yellow); }
 
 footer { text-align: center; color: var(--muted); font-size: 14px; padding: 26px 20px 90px; border-top: 2px solid var(--line); }
 footer b { font-family: var(--display); font-weight: 400; color: var(--text); }
+footer p { margin: 0 auto 6px; max-width: 760px; }
+footer .about { font-size: 13px; opacity: 0.8; }
+.seo-intro { max-width: 760px; margin: 20px auto; }
+.seo-intro h1 { margin-bottom: 12px; }
+.seo-intro h2 { margin-top: 24px; font-size: 20px; }
+.seo-intro p { color: var(--muted); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1080px) {
