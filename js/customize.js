@@ -100,7 +100,8 @@
         </div>
         <div class="opt-group"><h3>Rocco, your coach</h3>
           <label class="toggle"><input type="checkbox" data-t="voice" ${prefs.voice ? 'checked' : ''}> Rocco speaks out loud</label>
-          <div class="field"><label for="voiceSel">Voice</label><select id="voiceSel" class="input"><option value="">Automatic</option></select></div>
+          <div class="field"><label for="voiceSel">Voice</label><select id="voiceSel" class="input"><option value="">Automatic</option></select><div class="muted voice-now" style="font-size:13px"></div></div>
+          <details class="rules voice-tip"><summary>Want Rocco to sound more human?</summary><p style="margin:8px 0 0">Rocco uses the voices built into your device, and some sound far more natural than others. Pick one marked <b>★ Natural</b>. If you don't see any:</p><ul style="margin:6px 0 0;padding-left:20px"><li><b>Mac:</b> System Settings → Accessibility → Spoken Content → System voice → Manage Voices… → download an English voice marked <b>Enhanced</b> or <b>Premium</b> (e.g. Evan, Ava, Zoe), then reload this page.</li><li><b>iPhone / iPad:</b> Settings → Accessibility → Spoken Content → Voices → English → download an <b>Enhanced</b> or <b>Premium</b> voice.</li><li><b>Windows:</b> open the site in <b>Microsoft Edge</b> — it has very natural "Online (Natural)" voices built in.</li><li><b>Chrome:</b> the <b>Google US English</b> / <b>Google UK English</b> voices sound good (they need internet).</li></ul></details>
           <div class="field"><label>How chatty is Rocco?</label><div class="seg" id="chatty">${[['quiet', '🤫 Quiet'], ['normal', '🙂 Normal'], ['chatty', '🎤 Chatty']].map(([v, l]) => `<button data-v="${v}" class="${prefs.chatty === v ? 'active' : ''}">${l}</button>`).join('')}</div></div>
           <div class="row"><button class="btn small" id="testVoice">🔊 Test voice</button><button class="btn small ghost" id="resetAll">Reset look to defaults</button></div>
         </div>`;
@@ -141,16 +142,21 @@
         if (i.dataset.t === 'sound') A().applyPrefs();
       }));
       $$('#chatty button', opts).forEach((b) => (b.onclick = () => { prefs.chatty = b.dataset.v; commit(); }));
-      $('#voiceSel', opts).onchange = (e) => { prefs.voiceName = e.target.value; savePrefs(); Coach.speak('This is my rock-star voice!', true); };
-      $('#testVoice', opts).onclick = () => Coach.speak('Yo! I\'m Rocco. Ready to rock some chess?', true);
+      $('#voiceSel', opts).onchange = (e) => { prefs.voiceName = e.target.value; savePrefs(); fillVoices(); Coach.speak('Yo! This is my new voice. How do I sound?', true); };
+      $('#testVoice', opts).onclick = () => Coach.speak('Yo! I\'m Rocco, your coach. Nice move, Qxf7 — that\'s checkmate! Ready for another round?', true);
       $('#resetAll', opts).onclick = () => { Object.assign(prefs, JSON.parse(JSON.stringify(DEFAULTS))); commit(); toast('Look reset to defaults'); };
     }
     function fillVoices() {
       const sel = $('#voiceSel', opts);
-      if (!sel || !('speechSynthesis' in window)) { if (sel) sel.disabled = true; return; }
-      const vs = speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang));
-      sel.innerHTML = '<option value="">Automatic</option>' + vs.map((v) => `<option value="${v.name.replace(/"/g, '&quot;')}" ${prefs.voiceName === v.name ? 'selected' : ''}>${v.name} (${v.lang})</option>`).join('');
-      if (!vs.length) speechSynthesis.addEventListener('voiceschanged', () => { const s = $('#voiceSel', opts); if (s && s.options.length <= 1) fillVoices(); }, { once: true });
+      if (!sel || !('speechSynthesis' in window)) { if (sel) { sel.disabled = true; $('.voice-now', opts).textContent = 'This browser cannot speak.'; } return; }
+      const all = Coach.voices();
+      const vs = all.filter((v) => Coach.voiceQuality(v) !== 'novelty');
+      const label = (v) => `${Coach.voiceQuality(v) === 'natural' ? '★ Natural — ' : ''}${v.name} (${v.lang})`;
+      sel.innerHTML = '<option value="">Automatic (best available)</option>' + vs.map((v) => `<option value="${v.name.replace(/"/g, '&quot;')}" ${prefs.voiceName === v.name ? 'selected' : ''}>${label(v)}</option>`).join('');
+      const cur = Coach.currentVoice();
+      const now = $('.voice-now', opts);
+      if (cur) now.innerHTML = `Rocco is using: <b>${cur.name}</b>${Coach.voiceQuality(cur) === 'natural' ? ' ★ natural' : ' — standard quality, see the tip below for a better one'}`;
+      if (!all.length) speechSynthesis.addEventListener('voiceschanged', () => { const s2 = $('#voiceSel', opts); if (s2 && s2.options.length <= 1) fillVoices(); }, { once: true });
     }
     draw();
   }

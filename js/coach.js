@@ -92,27 +92,89 @@
   };
 
   /* ---------- Voice ---------- */
+  // Rank the device's voices so Rocco uses the most natural-sounding one available.
+  const NOVELTY = /\b(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Fred|Good News|Hysterical|Jester|Junior|Organ|Pipe Organ|Ralph|Superstar|Trinoids|Whisper|Wobble|Zarvox|Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley|eSpeak|espeak)\b/i;
+  const GOOD = /\b(Samantha|Daniel|Karen|Moira|Tessa|Rishi|Alex|Ava|Evan|Nathan|Joelle|Noelle|Tom|Allison|Susan|Zoe|Serena|Arthur|Martha|Aaron|Nicky|Fiona|Oliver|Jamie|Lee|Matilda)\b/i;
+  const MALE = /\b(Daniel|Alex|Evan|Nathan|Tom|Aaron|Arthur|Rishi|Oliver|Jamie|Lee|Guy|Andrew|Brian|Christopher|Eric|Davis|Ryan|Roger|Steffan|Thomas|William|Liam|Male)\b/i;
+  function voiceScore(v) {
+    const n = v.name;
+    if (NOVELTY.test(n)) return -1000;
+    let s = 0;
+    if (/Natural|Neural/i.test(n)) s += 100;
+    if (/Premium/i.test(n)) s += 90;
+    if (/Enhanced/i.test(n)) s += 80;
+    if (/^Google/i.test(n)) s += 70;
+    if (/Microsoft.*Online/i.test(n)) s += 60;
+    if (GOOD.test(n)) s += 30;
+    if (/^en[-_](US|GB)/i.test(v.lang)) s += 10;
+    if (MALE.test(n)) s += 8;
+    if (v.localService === false) s += 3;
+    return s;
+  }
+  function voiceQuality(v) {
+    const s = voiceScore(v);
+    return s >= 60 ? 'natural' : s >= 0 ? 'standard' : 'novelty';
+  }
   let voices = [];
-  function loadVoices() { try { voices = speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang)); } catch (e) { voices = []; } }
+  function loadVoices() {
+    try { voices = speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang)).sort((a, b) => voiceScore(b) - voiceScore(a)); } catch (e) { voices = []; }
+  }
   if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.addEventListener('voiceschanged', loadVoices); }
   function chooseVoice() {
+    if (!voices.length) loadVoices();
     const p = A().prefs;
     if (p.voiceName) { const v = voices.find((x) => x.name === p.voiceName); if (v) return v; }
-    const pref = ['Daniel', 'Google UK English Male', 'Alex', 'Fred', 'Aaron', 'Arthur', 'Rishi', 'Tom'];
-    for (const n of pref) { const v = voices.find((x) => x.name.includes(n)); if (v) return v; }
-    return voices[0] || null;
+    return voices.find((v) => voiceScore(v) > -100) || voices[0] || null;
   }
-  const plain = (t) => String(t).replace(/<[^>]+>/g, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}️]/gu, '').replace(/\*/g, '').trim();
+
+  // Turn on-screen text into something that sounds natural when spoken.
+  const PIECE_WORD = { K: 'king', Q: 'queen', R: 'rook', B: 'bishop', N: 'knight' };
+  function sanToWords(_, piece, fromFile, fromRank, takes, dest, promo, mark) {
+    let w;
+    if (piece) w = PIECE_WORD[piece] + (takes ? ' takes ' : ' to ') + dest;
+    else w = takes ? `${fromFile} takes ${dest}` : dest;
+    if (promo) w += ' promotes to a ' + PIECE_WORD[promo];
+    if (mark === '+') w += ', check';
+    if (mark === '#') w += ', checkmate';
+    return w;
+  }
+  function humanize(text) {
+    let t = String(text)
+      .replace(/<[^>]+>/g, '')
+      .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}️‍]/gu, '')
+      .replace(/\*[^*]+\*/g, (m) => m.slice(1, -1) + ',')
+      .replace(/\bO-O-O\b/g, 'castles queenside').replace(/\bO-O\b/g, 'castles kingside')
+      .replace(/(?<![\w-])([KQRBN])?([a-h])?([1-8])?(x)?([a-h][1-8])(?:=([QRBN]))?([+#])?(?![\w])/g, sanToWords)
+      .replace(/−\s?(\d)/g, 'minus $1').replace(/\+(\d)/g, 'plus $1')
+      .replace(/\bvs\.?\b/gi, 'versus')
+      .replace(/\s*&\s*/g, ' and ')
+      .replace(/[!?]{2,}/g, '!')
+      .replace(/\s*[—–]\s*/g, ', ').replace(/…/g, '... ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+    return t;
+  }
+  // Split into short sentences: browsers sound far more natural (and don't cut off) with short utterances.
+  function sentences(t) { return t.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter((s) => s && /\w/.test(s)); }
+
   function speak(text, force) {
     const p = A().prefs;
     if ((!p.voice && !force) || !('speechSynthesis' in window)) return;
     try {
       speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(plain(text));
       const v = chooseVoice();
-      if (v) u.voice = v;
-      u.rate = 1.06; u.pitch = 0.92; u.volume = 1;
-      speechSynthesis.speak(u);
+      const natural = v && voiceQuality(v) === 'natural';
+      sentences(humanize(text)).forEach((s, i) => {
+        const u = new SpeechSynthesisUtterance(s);
+        if (v) { u.voice = v; u.lang = v.lang; }
+        const excited = /!$/.test(s);
+        // Neural voices sound best untouched; standard voices get a little life from tiny rate/pitch changes.
+        u.rate = natural ? 1.0 : 0.98 + (excited ? 0.06 : 0) + (i % 2 ? 0.02 : -0.01);
+        u.pitch = natural ? 1.0 : excited ? 1.08 : 1.0;
+        u.volume = 1;
+        speechSynthesis.speak(u);
+      });
     } catch (e) { /* speech unavailable */ }
   }
 
@@ -298,7 +360,8 @@
   }
 
   window.Coach = {
-    name: 'Rocco', svg, avatar, LINES, JOKES, TIPS, speak, say, pick, chatty, classify, answer,
+    name: 'Rocco', svg, avatar, LINES, JOKES, TIPS, speak, say, pick, chatty, classify, answer, humanize, voiceScore, voiceQuality,
+    voices: () => { loadVoices(); return voices; }, currentVoice: () => chooseVoice(),
     line(kind) { return pick(LINES[kind] || LINES.good); },
     setContext(c) { ctx = c; },
     clearContext() { ctx = null; },
