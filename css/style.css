@@ -50,7 +50,8 @@ h1, h2, h3 { line-height: 1.2; margin: 0 0 0.4em; }
 }
 .brand small { display: block; font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.4px; }
 .nav { display: flex; gap: 4px; margin-left: 12px; }
-.nav a { padding: 8px 14px; border-radius: 10px; color: var(--muted); font-weight: 600; }
+.nav a { padding: 8px 14px; border-radius: 10px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+@media (max-width: 860px) { .brand small { display: none; } .nav { margin-left: 0; } .nav a { padding: 8px 10px; } }
 .nav a:hover { color: var(--text); background: var(--panel); }
 .nav a.active { color: var(--text); background: var(--panel2); }
 .top-actions { margin-left: auto; display: flex; gap: 6px; }
