@@ -3,7 +3,8 @@
   'use strict';
   const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
   const VS = '︎';
-  const glyph = (p) => GLYPH[p.toLowerCase()] + VS;
+  const LETTER = { k: 'K', q: 'Q', r: 'R', b: 'B', n: 'N', p: 'P' };
+  const glyph = (p) => (Board.pieceSet === 'letters' ? LETTER[p.toLowerCase()] : GLYPH[p.toLowerCase()] + VS);
 
   function pieceSpan(p) {
     const c = p < 'a' ? 'w' : 'b';
@@ -32,7 +33,7 @@
       this.movable = opts.movable || (() => false);
       this.movesFor = opts.movesFor || null; // optional (squareName) => legal move list override
       this.onSquare = opts.onSquare || null; // optional (squareName) => void, for square-clicking games
-      this.coords = opts.coords !== false;
+      this.coords = opts.coords !== undefined ? opts.coords : null; // null = follow Board.defaults
       this.chess = null;
       this.selected = null;
       this.lastMove = null;
@@ -73,7 +74,7 @@
       if (!opts.keepAnnotations) { this.arrows = []; this.marks = []; }
       this._closePromo();
       this.render();
-      const animate = opts.animate !== false && !this._skipAnim;
+      const animate = opts.animate !== false && !this._skipAnim && Board.defaults.animate;
       this._skipAnim = false;
       const am = opts.animMove !== undefined ? opts.animMove : lastMove;
       if (animate && am) {
@@ -107,6 +108,7 @@
       const last = this.lastMove ? [S(this.lastMove.from), S(this.lastMove.to)] : [];
       const marks = new Set(this.marks.map(S));
       const hints = new Set(this.hintSquares.map(S));
+      const showCoords = this.coords === null ? Board.defaults.coords : this.coords;
       let html = '';
       for (let d = 0; d < 64; d++) {
         const i = this.orientation === 'w' ? d : 63 - d;
@@ -121,8 +123,8 @@
         if (hints.has(i)) cls += ' hint';
         if (tset.has(i)) cls += p || tset.get(i).flags === 'e' ? ' cap' : ' dot';
         let inner = '';
-        if (this.coords && d >= 56) inner += `<span class="coord file">${'abcdefgh'[f]}</span>`;
-        if (this.coords && (d & 7) === 0) inner += `<span class="coord rank">${8 - r}</span>`;
+        if (showCoords && d >= 56) inner += `<span class="coord file">${'abcdefgh'[f]}</span>`;
+        if (showCoords && (d & 7) === 0) inner += `<span class="coord rank">${8 - r}</span>`;
         if (p) inner += pieceSpan(p);
         html += `<div class="${cls}" data-i="${i}">${inner}</div>`;
       }
@@ -319,6 +321,8 @@
     }
   }
 
+  Board.pieceSet = 'glyph';
+  Board.defaults = { coords: true, animate: true };
   Board.glyph = glyph;
   Board.pieceSpan = pieceSpan;
   Board.miniBoard = miniBoard;

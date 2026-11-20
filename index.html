@@ -2,39 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Outpost — Chess Training Coach</title>
-  <meta name="description" content="Learn chess with interactive lessons, solve puzzles, and play a friend on one device." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23e6a93f'/><text x='50' y='74' font-size='70' text-anchor='middle'>♞</text></svg>" />
-  <link rel="stylesheet" href="css/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rook & Roll — Chess that rocks</title>
+  <meta name="description" content="Rook & Roll: learn chess with interactive lessons, puzzles, mini-games and Rocco — a rock-star rook coach who adapts to you. Free, no sign-up." />
+  <meta name="theme-color" content="#ff4d5e" />
+  <meta property="og:title" content="Rook & Roll — Chess that rocks" />
+  <meta property="og:description" content="Lessons, puzzles, pass & play, mini-games and Rocco, your rock-star chess coach." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 124'><path d='M14 116 Q14 103 26 101 H74 Q86 103 86 116 Z M28 101 L31 47 H69 L72 101 Z M19 48 V16 H33 V26 H43 V16 H57 V26 H67 V16 H81 V48 Z' fill='%23ffd23f' stroke='%230e0c12' stroke-width='5' stroke-linejoin='round'/><rect x='31' y='59' width='17' height='12' rx='4'/><rect x='52' y='59' width='17' height='12' rx='4'/><path d='M30 49 H70 L70 56 H30Z' fill='%23ff4d5e'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="css/style.css?v=2" />
 </head>
-<body data-theme="walnut">
+<body>
   <header class="topbar">
-    <a class="brand" href="#home">
-      <span class="logo">♞</span>
-      <span>Outpost<small>Chess training coach</small></span>
+    <a class="brand" href="#home" aria-label="Rook and Roll home">
+      <span class="logo" id="logo"></span>
+      <span><span class="word">Rook <i>&</i> Roll</span><small>Chess that rocks</small></span>
     </a>
-    <nav class="nav">
+    <nav class="nav" aria-label="Main">
       <a href="#home" data-r="">Home</a>
       <a href="#lessons" data-r="lessons">Lessons</a>
       <a href="#puzzles" data-r="puzzles">Puzzles</a>
       <a href="#play" data-r="play">Play</a>
-      <a href="#games" data-r="games">Mini-games</a>
+      <a href="#games" data-r="games">Arcade</a>
     </nav>
     <div class="top-actions">
-      <button class="icon-btn" id="themeBtn" title="Change board colours">🎨</button>
-      <button class="icon-btn" id="soundBtn" title="Sound on/off">🔊</button>
+      <a class="icon-btn" id="customBtn" href="#customize" title="Customize board & pieces" aria-label="Customize board and pieces">🎨</a>
+      <button class="icon-btn" id="soundBtn" title="Sound effects on/off" aria-label="Sound effects on or off">🔊</button>
     </div>
   </header>
   <main id="view"></main>
-  <footer>Outpost · progress is saved in this browser · works offline</footer>
+  <footer><b>Rook &amp; Roll</b> · chess that rocks · created by Dinmukhammed · progress is saved in this browser</footer>
 
-  <script src="js/chess.js"></script>
-  <script src="js/engine.js"></script>
-  <script src="js/data/lessons.js"></script>
-  <script src="js/data/puzzles.js"></script>
-  <script src="js/board.js"></script>
-  <script src="js/games.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/chess.js?v=2"></script>
+  <script src="js/engine.js?v=2"></script>
+  <script src="js/data/lessons.js?v=2"></script>
+  <script src="js/data/puzzles.js?v=2"></script>
+  <script src="js/board.js?v=2"></script>
+  <script src="js/coach.js?v=2"></script>
+  <script src="js/customize.js?v=2"></script>
+  <script src="js/games.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
 </body>
 </html>

@@ -1,9 +1,9 @@
-/* Outpost mini-games: Secret Queen, Pawn Wars, Coordinate Rush, Knight Sprint. */
+/* Rook & Roll arcade: Secret Queen, Pawn Wars, Coordinate Rush, Knight Sprint. */
 (function () {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const O = () => window.Outpost;
+  const O = () => window.App;
   const other = (c) => (c === 'w' ? 'b' : 'w');
   const colorName = (c) => (c === 'w' ? 'White' : 'Black');
   const EMPTY = '8/8/8/8/8/8/8/8 w - - 0 1';
@@ -22,7 +22,7 @@
     view.innerHTML = `<div class="trainer game"><div class="board-col">${aboveBoard}<div class="board-frame"><div class="bd"></div></div></div><div class="panel">${panelHtml}</div></div>`;
     return new Board($('.bd', view));
   }
-  const crumbs = (t) => `<div class="crumbs"><a href="#games">Mini-games</a> / ${t}</div>`;
+  const crumbs = (t) => `<div class="crumbs"><a href="#games">Arcade</a> / ${t}</div>`;
 
   /* ---------------- List ---------------- */
   function list(view) {
@@ -31,7 +31,7 @@
       'coord-rush': () => (best('coord') != null ? `Best: ${best('coord')} squares` : ''),
       'knight-sprint': () => (best('knight') != null ? `Best: ${best('knight')} extra jumps` : ''),
     };
-    view.innerHTML = `<div class="section-title" style="margin-top:0"><div><h1>Mini-games</h1><div class="muted">Quick, fun ways to sharpen your chess — alone or with a friend.</div></div></div>
+    view.innerHTML = `<div class="section-title" style="margin-top:0"><div><h1>The Arcade</h1><div class="muted">Quick, loud, fun ways to sharpen your chess — solo or with a friend.</div></div></div>
       <div class="games-grid">${GAMES.map((g) => `
         <div class="card game-card" data-id="${g.id}">
           <div class="ico">${g.icon}</div>
@@ -209,7 +209,7 @@
         const c = st.picker;
         panel.innerHTML = `
           <h2 style="margin:0">👑 Secret Queen</h2>
-          <div class="coach"><div class="avatar">🤫</div><div class="bubble"><b>${colorName(c)}, choose your secret pawn.</b><br>${colorName(other(c))} — look away! Tap one of your pawns. It moves like a normal pawn until you reveal it — then it instantly becomes a queen.</div></div>
+          <div class="coach">${Coach.avatar('smirk')}<div class="bubble"><span class="who">Rocco</span><b>${colorName(c)}, choose your secret pawn.</b><br>${colorName(other(c))} — look away! Tap one of your pawns. It moves like a normal pawn until you reveal it — then it instantly becomes a queen.</div></div>
           <div class="feedback ${st.pick ? 'good' : 'info'}">${st.pick ? `Secret pawn: <b>${st.pick}</b> — confirm to lock it in.` : 'Tap one of your pawns on the board.'}</div>
           <div class="row end"><button class="btn primary" id="confirm" ${st.pick && st.phase === 'pick' ? '' : 'disabled'}>Lock in secret 🔒</button></div>
           ${rulesHtml()}`;
@@ -342,7 +342,7 @@
       const seg = (k, opts) => `<div class="seg" data-k="${k}">${opts.map(([v, l]) => `<button data-v="${v}" class="${String(prefs[k]) === String(v) ? 'active' : ''}">${l}</button>`).join('')}</div>`;
       panel.innerHTML = `
         <div class="row spread" style="align-items:center"><h2 style="margin:0">♟ Pawn Wars</h2></div>
-        <div class="coach"><div class="avatar">♞</div><div class="bubble">Only pawns! <b>Get one pawn to the other side</b> to win. You also win if your opponent runs out of moves. Normal pawn rules apply — including en passant.</div></div>
+        <div class="coach">${Coach.avatar('happy')}<div class="bubble"><span class="who">Rocco</span>Only pawns! <b>Get one pawn to the other side</b> to win. You also win if your opponent runs out of moves. Normal pawn rules apply — including en passant.</div></div>
         <div class="field"><label class="muted" style="font-size:13px;font-weight:600">Opponent</label>${seg('mode', [['cpu', '🤖 Coach'], ['friend', '👥 Friend']])}</div>
         ${prefs.mode === 'cpu' ? `<div class="field"><label class="muted" style="font-size:13px;font-weight:600">Coach strength · your colour</label>${seg('level', [[0, 'Easy'], [1, 'Medium'], [2, 'Hard']])}${seg('color', [['w', '⚪ White'], ['b', '⚫ Black']])}</div>` : ''}
         <div class="status">${status}</div>
@@ -422,7 +422,7 @@
     function render() {
       panel.innerHTML = `
         <h2 style="margin:0">🎯 Coordinate Rush</h2>
-        <div class="coach"><div class="avatar">♞</div><div class="bubble">A square name appears above the board. <b>Click that square</b> as fast as you can. You have 30 seconds. Knowing coordinates by heart makes reading chess books and notation easy!</div></div>
+        <div class="coach">${Coach.avatar('happy')}<div class="bubble"><span class="who">Rocco</span>A square name appears above the board. <b>Click that square</b> as fast as you can. You have 30 seconds. Knowing coordinates by heart makes reading chess books and notation easy!</div></div>
         <div class="row spread" style="align-items:center"><div><div class="muted">Score</div><div class="rating-big" id="score">${score}</div></div><div style="text-align:right"><div class="muted">Time</div><div class="rating-big" id="time">${running ? '' : '30.0s'}</div></div></div>
         <div class="stat" style="padding:0;border:0"><div class="bar"><i id="tbar" style="width:100%"></i></div></div>
         <div class="field"><label class="muted" style="font-size:13px;font-weight:600">Play from</label><div class="seg" id="side"><button data-v="w" class="${side === 'w' ? 'active' : ''}">⚪ White's side</button><button data-v="b" class="${side === 'b' ? 'active' : ''}">⚫ Black's side</button></div></div>
@@ -520,7 +520,7 @@
     function render() {
       panel.innerHTML = `
         <h2 style="margin:0">🐴 Knight Sprint</h2>
-        <div class="coach"><div class="avatar">♞</div><div class="bubble">Jump the knight to the <b>glowing square</b> using as few moves as possible. Seeing knight paths quickly is the secret behind every knight fork!</div></div>
+        <div class="coach">${Coach.avatar('happy')}<div class="bubble"><span class="who">Rocco</span>Jump the knight to the <b>glowing square</b> using as few moves as possible. Seeing knight paths quickly is the secret behind every knight fork!</div></div>
         <div class="steps">${Array.from({ length: ROUNDS }, (_, i) => `<i class="${i < results.length ? 'done' : i === round && !done ? 'cur' : ''}"></i>`).join('')}</div>
         <div class="row spread"><div><div class="muted">Jumps</div><div class="rating-big">${moves}</div></div><div style="text-align:right"><div class="muted">Target</div><div class="rating-big">${target || '—'}</div></div></div>
         <div class="feedback ${msg.startsWith('✓') ? 'good' : 'info'}">${msg}</div>

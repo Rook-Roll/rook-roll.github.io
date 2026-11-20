@@ -192,7 +192,23 @@
       { name: 'Casual', depth: 2, noise: 70, randomChance: 0.05, timeMs: 800 },
       { name: 'Club', depth: 3, noise: 15, timeMs: 1500 },
       { name: 'Strong', depth: 5, noise: 0, timeMs: 2500 },
+      { name: 'Adaptive', adaptive: true },
     ],
+    ADAPTIVE: 4,
+    /* Search settings for an adaptive rating (300–2200). coachEval: the coach's current advantage in
+       centipawns (from its own side) — used as a rubber band so lopsided games stay fun. */
+    adaptiveParams(rating, coachEval = 0) {
+      const r = Math.max(300, Math.min(2200, rating));
+      const p = {
+        depth: r < 650 ? 1 : r < 950 ? 2 : r < 1350 ? 3 : r < 1750 ? 4 : 5,
+        noise: Math.max(0, Math.min(260, (1700 - r) / 4.5)),
+        randomChance: r < 600 ? 0.18 : r < 800 ? 0.09 : r < 1000 ? 0.035 : 0,
+        timeMs: Math.round(Math.max(300, Math.min(2500, 300 + (r - 300) * 1.2))),
+      };
+      if (coachEval > 400 && r < 1600) { p.noise += 90; p.randomChance += 0.05; }
+      else if (coachEval < -300) { p.noise *= 0.5; p.randomChance = 0; }
+      return p;
+    },
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = Engine;
