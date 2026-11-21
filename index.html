@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rook &amp; Roll — Free Chess Lessons, Puzzles &amp; Games for All Levels</title>
-  <meta name="description" content="Learn chess free with Rook &amp; Roll: 26 interactive lessons and 235 puzzles for beginner, intermediate and advanced players, pass &amp; play with a friend on one device, an adaptive computer coach and fun chess mini-games. No sign-up." />
+  <meta name="description" content="Learn chess free with Rook &amp; Roll: 26 interactive lessons and 235 puzzles for beginner, intermediate and advanced players, pass &amp; play with a friend on one device, a daily puzzle, Puzzle Rush, an adaptive computer coach with game review, and chess mini-games. No sign-up." />
   <link rel="canonical" href="https://rook-roll.github.io/" />
   <meta name="google-site-verification" content="T7doabPo6ojvkmMNEwhrz4QAX6ojnwkYQaLyH3PFhis" />
   <meta name="theme-color" content="#ff4d5e" />
@@ -48,7 +48,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/style.css?v=5" />
+  <link rel="stylesheet" href="css/style.css?v=6" />
 </head>
 <body>
   <header class="topbar">
@@ -64,6 +64,7 @@
       <a href="#games" data-r="games">Arcade</a>
     </nav>
     <div class="top-actions">
+      <a class="icon-btn" id="trophyBtn" href="#trophies" title="Trophies & rank" aria-label="Trophies and rank">🏆</a>
       <a class="icon-btn" id="customBtn" href="#customize" title="Customize board & pieces" aria-label="Customize board and pieces">🎨</a>
       <button class="icon-btn" id="soundBtn" title="Sound effects on/off" aria-label="Sound effects on or off">🔊</button>
     </div>
@@ -79,9 +80,11 @@
       <p>Tactics puzzles rated from 430 to 1850, filterable by level and theme: mate in 1, mate in 2, mate in 3, forks, back-rank mates, smothered mates, sacrifices and endgames. Your puzzle rating goes up as you solve.</p>
       <h2>Play chess with a friend on one device</h2>
       <p>Pass and play on the same phone, tablet or computer, with chess clocks and an auto-flipping board — or play the computer coach on Beginner, Casual, Club, Strong or Adaptive level.</p>
+      <h2>Daily chess puzzle and Puzzle Rush</h2>
+      <p>A new Daily Puzzle every day — the same one for everyone — with a streak counter and a shareable result. Puzzle Rush: solve as many puzzles as you can in three minutes as they get harder. Earn XP, climb from Garage Band to Rock Legend and unlock achievements. After every game, Rocco reviews your moves, shows your accuracy and lets you replay your key mistakes.</p>
       <h2>Chess mini-games</h2>
       <p>Secret Queen, Pawn Wars, Coordinate Rush and Knight Sprint — fun ways to sharpen board vision and tactics.</p>
-      <p><a href="#lessons">Start a lesson</a> · <a href="#puzzles">Solve puzzles</a> · <a href="#play-new">Play a friend</a> · <a href="#games">Mini-games</a></p>
+      <p><a href="#lessons">Start a lesson</a> · <a href="#puzzles">Solve puzzles</a> · <a href="#daily">Daily puzzle</a> · <a href="#rush">Puzzle Rush</a> · <a href="#play-new">Play a friend</a> · <a href="#games">Mini-games</a></p>
     </section>
   </main>
   <footer>
@@ -89,14 +92,17 @@
     <p class="about">A free chess training site: chess lessons for beginners and improvers, tactics puzzles, pass &amp; play chess with a friend on one device, an adaptive computer opponent and chess mini-games. No account needed — your progress is saved in this browser.</p>
   </footer>
 
-  <script src="js/chess.js?v=5"></script>
-  <script src="js/engine.js?v=5"></script>
-  <script src="js/data/lessons.js?v=5"></script>
-  <script src="js/data/puzzles.js?v=5"></script>
-  <script src="js/board.js?v=5"></script>
-  <script src="js/coach.js?v=5"></script>
-  <script src="js/customize.js?v=5"></script>
-  <script src="js/games.js?v=5"></script>
-  <script src="js/app.js?v=5"></script>
+  <!-- Visitor counter (GoatCounter, no cookies). Put your GoatCounter code here, e.g. 'rookroll' for rookroll.goatcounter.com. Empty = off. -->
+  <script>window.RR_COUNTER = '';</script>
+  <script src="js/chess.js?v=6"></script>
+  <script src="js/engine.js?v=6"></script>
+  <script src="js/data/lessons.js?v=6"></script>
+  <script src="js/data/puzzles.js?v=6"></script>
+  <script src="js/board.js?v=6"></script>
+  <script src="js/coach.js?v=6"></script>
+  <script src="js/customize.js?v=6"></script>
+  <script src="js/games.js?v=6"></script>
+  <script src="js/extras.js?v=6"></script>
+  <script src="js/app.js?v=6"></script>
 </body>
 </html>

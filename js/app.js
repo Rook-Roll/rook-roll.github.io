@@ -171,8 +171,9 @@
         return;
       }
       this.failed = true;
-      this.busy = true;
       Sound.bad();
+      if (this.noUndo) { this.done = true; this.onWrong && this.onWrong(m); return; }
+      this.busy = true;
       this.onWrong && this.onWrong(m);
       this._later(() => {
         this.chess.undo();
@@ -238,7 +239,7 @@
 
   /* ---------------- Router ---------------- */
   let cleanup = null;
-  const NAV_FOR = { home: '', lesson: 'lessons', puzzle: 'puzzles', game: 'games' };
+  const NAV_FOR = { home: '', lesson: 'lessons', puzzle: 'puzzles', daily: 'puzzles', rush: 'puzzles', game: 'games', review: 'play' };
   function route() {
     if (cleanup) { try { cleanup(); } catch (e) { console.error(e); } cleanup = null; }
     $$('.modal-back').forEach((m) => m.remove());
@@ -248,13 +249,15 @@
     const name = cut < 0 ? h : h.slice(0, cut);
     const arg = cut < 0 ? '' : h.slice(cut + 1);
     const navKey = name in NAV_FOR ? NAV_FOR[name] : name;
-    const TITLES = { lessons: 'Chess Lessons', lesson: 'Lesson', puzzles: 'Chess Puzzles', puzzle: 'Puzzle', play: 'Play Chess', games: 'Chess Mini-games', game: 'Mini-game', customize: 'Customize' };
+    const TITLES = { lessons: 'Chess Lessons', lesson: 'Lesson', puzzles: 'Chess Puzzles', puzzle: 'Puzzle', play: 'Play Chess', games: 'Chess Mini-games', game: 'Mini-game', customize: 'Customize', daily: 'Daily Chess Puzzle', rush: 'Puzzle Rush', trophies: 'Trophies', review: 'Game Review' };
     document.title = TITLES[name] ? `${TITLES[name]} · Rook & Roll` : 'Rook & Roll — Free Chess Lessons, Puzzles & Games for All Levels';
     $$('.nav a').forEach((a) => a.classList.toggle('active', a.dataset.r === navKey));
     $('#customBtn').classList.toggle('active', name === 'customize');
+    $('#trophyBtn').classList.toggle('active', name === 'trophies');
     const view = $('#view');
     view.innerHTML = '';
     window.scrollTo(0, 0);
+    Extras.check();
     switch (name) {
       case 'lessons': cleanup = viewLessons(view); break;
       case 'lesson': cleanup = viewLesson(view, arg); break;
@@ -264,13 +267,17 @@
       case 'games': cleanup = Games.list(view); break;
       case 'game': cleanup = Games.open(view, arg); break;
       case 'customize': cleanup = Customize.view(view); break;
+      case 'daily': cleanup = Extras.viewDaily(view); break;
+      case 'rush': cleanup = Extras.viewRush(view); break;
+      case 'trophies': cleanup = Extras.viewTrophies(view); break;
+      case 'review': cleanup = Extras.viewReview(view); break;
       default: cleanup = viewHome(view);
     }
+    Extras.countView('/' + (name || 'home'));
   }
 
   /* ---------------- Home ---------------- */
   function dayIndex() { return Math.floor((Date.now() - new Date().getTimezoneOffset() * 60000) / 86400000); }
-  function puzzleOfDay() { return PUZZLES[dayIndex() % PUZZLES.length]; }
   function nextLesson() { return LESSONS.find((l) => !progress.lessons[l.id]) || null; }
   function solvedCount() { return Object.values(progress.puzzles).filter((p) => p.solved).length; }
 
@@ -278,8 +285,6 @@
     const next = nextLesson();
     const done = Object.keys(progress.lessons).length;
     const solved = solvedCount();
-    const potd = puzzleOfDay();
-    const potdDone = progress.puzzles[potd.id] && progress.puzzles[potd.id].solved;
     const tip = Coach.TIPS[dayIndex() % Coach.TIPS.length];
     const game = Store.get('game', null);
     const hour = new Date().getHours();
@@ -308,26 +313,20 @@
         <div class="stat"><div class="v">${progress.rating}</div><div class="l">Puzzle rating</div></div>
         <div class="stat"><div class="v">${streak()} 🔥</div><div class="l">Day streak</div></div>
       </div>
+      ${Extras.rankStrip()}
+      <div class="duo">
+        ${Extras.dailyCard()}
+        <div class="card">${coachBubble(`<b>Rocco's tip of the day:</b> ${esc(tip)}`, 'smirk')}
+          <div class="row" style="margin-top:12px"><button class="btn small" id="talk">💬 Talk to Rocco</button></div></div>
+      </div>
       <div class="section-title"><h2>Tonight's lineup</h2><a href="#customize" class="muted">🎨 Customize your board →</a></div>
       <div class="tickets">
         <div class="ticket t1" data-go="#lessons"><div class="ico">📚</div><h3>The Setlist</h3><p>${LESSONS.length} interactive lessons, from first moves to mating patterns.</p><div class="stub"><span>Lessons</span><span>${done}/${LESSONS.length} ✓</span></div></div>
-        <div class="ticket t2" data-go="#puzzles"><div class="ico">🧩</div><h3>Jam Session</h3><p>${PUZZLES.length} tactics puzzles. Your rating rises as you solve.</p><div class="stub"><span>Puzzles</span><span>★ ${progress.rating}</span></div></div>
+        <div class="ticket t2" data-go="#puzzles"><div class="ico">🧩</div><h3>Jam Session</h3><p>${PUZZLES.length} tactics puzzles, a Daily Puzzle and ⚡ Puzzle Rush.</p><div class="stub"><span>Puzzles</span><span>★ ${progress.rating}</span></div></div>
         <div class="ticket t3" data-go="${game && !game.result ? '#play' : '#play-new'}"><div class="ico">♟️</div><h3>Live Show</h3><p>${game && !game.result ? '<b>Game in progress</b> — jump back on stage.' : 'Pass & play with a friend, or take on Rocco — he adapts to you.'}</p><div class="stub"><span>Play</span><span>Adaptive ${adaptiveRating()}</span></div></div>
-        <div class="ticket t4" data-go="#games"><div class="ico">👑</div><h3>Arcade</h3><p>Secret Queen, Pawn Wars, Coordinate Rush & Knight Sprint.</p><div class="stub"><span>Mini-games</span><span>4 games</span></div></div>
+        <div class="ticket t4" data-go="#games"><div class="ico">👑</div><h3>Arcade</h3><p>Puzzle Rush, Secret Queen, Pawn Wars, Coordinate Rush & Knight Sprint.</p><div class="stub"><span>Mini-games</span><span>5 games</span></div></div>
       </div>
-      <div class="duo">
-        <div class="card potd">
-          <div>${Board.miniBoard(potd.fen, potd.fen.split(' ')[1])}</div>
-          <div>
-            <span class="pill ${potdDone ? 'green' : 'gold'}">${potdDone ? '✓ Solved' : 'Puzzle of the day'}</span>
-            <h3 style="margin:10px 0 4px">${esc(potd.title)}</h3>
-            <div class="muted" style="margin-bottom:12px">${colorName(potd.fen.split(' ')[1])} to move · rated ${potd.rating}</div>
-            <a class="btn primary small" href="#puzzle-${potd.id}">Solve it</a>
-          </div>
-        </div>
-        <div class="card">${coachBubble(`<b>Rocco's tip of the day:</b> ${esc(tip)}`, 'smirk')}
-          <div class="row" style="margin-top:12px"><button class="btn small" id="talk">💬 Talk to Rocco</button></div></div>
-      </div>`;
+`;
     $$('[data-go]', view).forEach((el) => (el.onclick = () => (location.hash = el.dataset.go)));
     $('#talk', view).onclick = () => Coach.open();
   }
@@ -468,6 +467,7 @@
       progress.lessonStep[id] = 0;
       markActive();
       saveProgress();
+      Extras.check();
       confetti();
       Sound.end();
       const nxt = LESSONS[idx + 1];
@@ -509,7 +509,7 @@
     view.innerHTML = `
       <div class="band-head mint">
         <div><h1>Jam Session</h1><p>${PUZZLES.length} puzzles from beginner to advanced. Nail one first try to raise your rating — hints and wrong notes cost points.</p>
-          <button class="btn primary" id="startPz">▶ Start jamming</button></div>
+          <div class="row"><button class="btn primary" id="startPz">▶ Start jamming</button><a class="btn" href="#daily">📅 Daily Puzzle${Extras.dailyStreak() ? ' · 🔥 ' + Extras.dailyStreak() : ''}</a><a class="btn" href="#rush">⚡ Puzzle Rush</a></div></div>
         <div style="text-align:right"><div class="muted">Puzzle rating</div><div class="rating-big">${progress.rating}</div><div class="muted">${solved}/${PUZZLES.length} solved</div></div>
       </div>
       <div class="section-title"><h2>Level</h2><span class="muted">🌱 under 800 · 🔥 800–1299 · 👑 1300+</span></div>
@@ -602,6 +602,7 @@
           const clean = !ex.failed && !ex.usedHelp;
           rate(clean ? 1 : 0);
           markSolved();
+          Extras.check();
           Sound.good();
           const line = Coach.line('solved');
           setMood(panel, 'cheer');
@@ -752,6 +753,7 @@
           <button class="btn small" data-a="pgn">⧉ PGN</button>
         </div>
         ${game.mode === 'friend' ? `<label class="toggle"><input type="checkbox" id="af" ${game.autoFlip ? 'checked' : ''}> Auto-flip board each turn</label>` : ''}
+        <a class="btn hot" href="#review" data-review style="display:none">📼 Review this game with Rocco</a>
         <div class="row spread"><a class="btn" href="#play-new">＋ New game</a><button class="btn primary" data-a="rematch" style="display:none">⟳ Rematch</button></div>
       </div></div>`;
     const panel = $('.panel', view);
@@ -816,7 +818,7 @@
     function resultText() {
       const r = game.result;
       if (!r) return '';
-      return r.winner ? `${esc(game.names[r.winner])} wins · ${r.reason}` : `Draw · ${r.reason}`;
+      return r.winner ? `${game.names[r.winner] === 'You' ? 'You win' : esc(game.names[r.winner]) + ' wins'} · ${r.reason}` : `Draw · ${r.reason}`;
     }
 
     function renderStatus() {
@@ -828,6 +830,7 @@
         st.innerHTML = `${chess.turn === 'w' ? '⚪' : '⚫'} ${colorName(chess.turn)} to move${game.mode === 'friend' ? ` — ${name}` : chess.turn === game.userColor ? ' — your turn' : ''}${chess.inCheck() ? ' · <span style="color:var(--bad)">Check!</span>' : ''}`;
       }
       $('[data-a="rematch"]', panel).style.display = game.result ? '' : 'none';
+      $('[data-review]', panel).style.display = game.result && game.moves.length >= 2 ? '' : 'none';
       $('[data-a="resign"]', panel).disabled = !!game.result || !game.moves.length;
       $('[data-a="draw"]', panel).disabled = !!game.result || game.moves.length < 2;
       $('[data-a="undo"]', panel).disabled = !game.moves.length || (game.mode === 'cpu' && !chess.history().some((m) => m.color === game.userColor));
@@ -935,7 +938,10 @@
       anaToken++;
       thinking = false;
       const adaptiveMsg = rateAdaptive(r);
+      const firstEnd = !game.counted;
+      game.counted = true;
       save();
+      if (firstEnd) Extras.recordGame(game, r);
       renderAll();
       board.render();
       Sound.end();
@@ -950,9 +956,9 @@
         if (game.mode === 'friend' ? !!r.winner : userWon) confetti();
         setTimeout(() => modal({
           icon: roccoIcon(kind === 'lose' ? 'smirk' : 'cheer'),
-          title: r.winner ? `${esc(game.names[r.winner])} wins!` : 'Draw!',
+          title: r.winner ? (game.names[r.winner] === 'You' ? 'You win!' : `${esc(game.names[r.winner])} wins!`) : 'Draw!',
           body: `By ${r.reason}. ${line}${adaptiveMsg ? '<br><br>' + adaptiveMsg : ''}`,
-          buttons: [{ label: 'Review', onClick: () => {} }, { label: '⟳ Rematch', cls: 'primary', onClick: rematch }],
+          buttons: [{ label: '📼 Review with Rocco', onClick: () => (location.hash = '#review') }, { label: '⟳ Rematch', cls: 'primary', onClick: rematch }],
         }), 500);
       }
     }
@@ -1139,8 +1145,10 @@
   }
 
   /* ---------------- Boot ---------------- */
-  window.App = { Store, prefs, savePrefs, progress, saveProgress, adaptiveRating, Sound, moveSound, toast, modal, confetti, esc, praise, markActive, applyPrefs };
+  window.App = { Store, prefs, savePrefs, progress, saveProgress, adaptiveRating, Sound, moveSound, toast, modal, confetti, esc, praise, markActive, applyPrefs,
+    fmtDay, Exercise, trainerLayout, coachBubble, setMood, roccoIcon, colorName, LEVEL_ICON };
   applyPrefs();
+  Extras.initCounter();
   Coach.mountDock();
   window.addEventListener('hashchange', route);
   route();

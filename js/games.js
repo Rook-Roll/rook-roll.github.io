@@ -9,6 +9,7 @@
   const EMPTY = '8/8/8/8/8/8/8/8 w - - 0 1';
 
   const GAMES = [
+    { id: 'puzzle-rush', icon: '⚡', title: 'Puzzle Rush', who: 'Solo · 3 minutes', desc: 'Solve as many puzzles as you can in 3 minutes. They get harder — and 3 mistakes ends the run!' },
     { id: 'secret-queen', icon: '👑', title: 'Secret Queen', who: '2 players · one device', desc: 'Each player secretly picks a pawn that is really a queen in disguise. Reveal it at the perfect moment!' },
     { id: 'pawn-wars', icon: '♟', title: 'Pawn Wars', who: 'With a friend or vs the coach', desc: 'Only pawns on the board. First to reach the far side wins. Great for learning pawn play.' },
     { id: 'coord-rush', icon: '🎯', title: 'Coordinate Rush', who: 'Solo · 30 seconds', desc: 'A square is named — click it as fast as you can. No coordinates on the board to help you!' },
@@ -28,6 +29,7 @@
   function list(view) {
     const { esc } = O();
     const bestText = {
+      'puzzle-rush': () => { const p = O().progress.stats; return p && p.rushBest ? `Best: ${p.rushBest} solved` : ''; },
       'coord-rush': () => (best('coord') != null ? `Best: ${best('coord')} squares` : ''),
       'knight-sprint': () => (best('knight') != null ? `Best: ${best('knight')} extra jumps` : ''),
     };
@@ -37,7 +39,7 @@
           <div class="ico">${g.icon}</div>
           <div><h3>${esc(g.title)}</h3><div class="pill">${esc(g.who)}</div><p>${esc(g.desc)}</p>${bestText[g.id] && bestText[g.id]() ? `<span class="pill gold">🏅 ${bestText[g.id]()}</span>` : ''}</div>
         </div>`).join('')}</div>`;
-    $$('.game-card', view).forEach((el) => (el.onclick = () => (location.hash = '#game-' + el.dataset.id)));
+    $$('.game-card', view).forEach((el) => (el.onclick = () => (location.hash = el.dataset.id === 'puzzle-rush' ? '#rush' : '#game-' + el.dataset.id)));
   }
 
   function open(view, id) {
