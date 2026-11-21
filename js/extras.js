@@ -413,6 +413,8 @@
     { id: 'final-chord', icon: '☠️', title: 'Final Chord', desc: 'Checkmate Rocco.', v: (s) => s.mateWins, goal: 1 },
     { id: 'giant-slayer', icon: '💪', title: 'Giant Slayer', desc: 'Beat Rocco on Strong.', v: (s) => s.strongWins, goal: 1 },
     { id: 'adaptive-1000', icon: '✨', title: 'Level Up', desc: 'Push Adaptive Rocco to 1000.', v: (s) => s.adaptive, goal: 1000 },
+    { id: 'soundcheck', icon: '🎚️', title: 'Soundcheck', desc: 'Find your Elo with the Soundcheck test.', v: (s) => s.eloTests || 0, goal: 1 },
+    { id: 'plan-done', icon: '🗺️', title: 'Tour Complete', desc: 'Finish every step of a learning plan.', v: (s) => s.plansDone || 0, goal: 1 },
     { id: 'tape', icon: '📼', title: 'Tape Review', desc: 'Review a finished game with Rocco.', v: (s) => s.reviews, goal: 1 },
     { id: 'studio', icon: '🎧', title: 'Studio Quality', desc: 'Play a game (10+ moves) with 90% accuracy.', v: (s) => s.bestAccuracy, goal: 90 },
     { id: 'coord-20', icon: '🗺️', title: 'Map Reader', desc: 'Find 20 squares in Coordinate Rush.', v: (s) => s.coord, goal: 20 },
@@ -420,7 +422,7 @@
   ];
   const goalOf = (a) => (typeof a.goal === 'function' ? a.goal() : a.goal);
   function xpOf(s, achCount) {
-    return s.lessons * 40 + s.solved * 10 + s.clean * 5 + s.dailySolved * 20 + s.rushTotal * 2 + s.games * 10 + s.cpuWins * 30 + s.reviews * 10 + achCount * 25;
+    return s.lessons * 40 + s.solved * 10 + s.clean * 5 + s.dailySolved * 20 + s.rushTotal * 2 + s.games * 10 + s.cpuWins * 30 + s.reviews * 10 + Math.min(s.eloTests || 0, 5) * 30 + (s.plansDone || 0) * 150 + achCount * 25;
   }
   function rankFor(xp) {
     let i = 0;
@@ -452,6 +454,7 @@
   function check() {
     const { progress, saveProgress } = A();
     stats();
+    if (window.Plan) Plan.tick();
     const before = standing();
     const s = before.s;
     const fresh = [];
@@ -756,5 +759,5 @@
     try { window.goatcounter.count({ path, title: document.title }); } catch (e) { /* blocked */ }
   }
 
-  window.Extras = { viewDaily, viewRush, viewTrophies, viewReview, dailyInfo, dailyCard, dailyStreak, rankStrip, standing, check, recordGame, initCounter, countView, ACH, RANKS };
+  window.Extras = { share, viewDaily, viewRush, viewTrophies, viewReview, dailyInfo, dailyCard, dailyStreak, rankStrip, standing, check, recordGame, initCounter, countView, ACH, RANKS };
 })();

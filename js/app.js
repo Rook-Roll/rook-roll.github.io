@@ -239,7 +239,7 @@
 
   /* ---------------- Router ---------------- */
   let cleanup = null;
-  const NAV_FOR = { home: '', lesson: 'lessons', puzzle: 'puzzles', daily: 'puzzles', rush: 'puzzles', game: 'games', review: 'play' };
+  const NAV_FOR = { home: '', lesson: 'lessons', puzzle: 'puzzles', daily: 'puzzles', rush: 'puzzles', game: 'games', review: 'play', soundcheck: 'plan', drill: 'plan' };
   function route() {
     if (cleanup) { try { cleanup(); } catch (e) { console.error(e); } cleanup = null; }
     $$('.modal-back').forEach((m) => m.remove());
@@ -249,7 +249,7 @@
     const name = cut < 0 ? h : h.slice(0, cut);
     const arg = cut < 0 ? '' : h.slice(cut + 1);
     const navKey = name in NAV_FOR ? NAV_FOR[name] : name;
-    const TITLES = { lessons: 'Chess Lessons', lesson: 'Lesson', puzzles: 'Chess Puzzles', puzzle: 'Puzzle', play: 'Play Chess', games: 'Chess Mini-games', game: 'Mini-game', customize: 'Customize', daily: 'Daily Chess Puzzle', rush: 'Puzzle Rush', trophies: 'Trophies', review: 'Game Review' };
+    const TITLES = { lessons: 'Chess Lessons', lesson: 'Lesson', puzzles: 'Chess Puzzles', puzzle: 'Puzzle', play: 'Play Chess', games: 'Chess Mini-games', game: 'Mini-game', customize: 'Customize', daily: 'Daily Chess Puzzle', rush: 'Puzzle Rush', trophies: 'Trophies', review: 'Game Review', plan: 'My Chess Learning Plan', soundcheck: 'Chess Elo Test' };
     document.title = TITLES[name] ? `${TITLES[name]} · Rook & Roll` : 'Rook & Roll — Free Chess Lessons, Puzzles & Games for All Levels';
     $$('.nav a').forEach((a) => a.classList.toggle('active', a.dataset.r === navKey));
     $('#customBtn').classList.toggle('active', name === 'customize');
@@ -261,7 +261,7 @@
     switch (name) {
       case 'lessons': cleanup = viewLessons(view); break;
       case 'lesson': cleanup = viewLesson(view, arg); break;
-      case 'puzzles': cleanup = viewPuzzles(view); break;
+      case 'puzzles': Plan.clearDrill(); cleanup = viewPuzzles(view); break;
       case 'puzzle': cleanup = viewPuzzle(view, arg); break;
       case 'play': cleanup = arg === 'new' ? viewSetup(view) : viewGame(view); break;
       case 'games': cleanup = Games.list(view); break;
@@ -271,6 +271,9 @@
       case 'rush': cleanup = Extras.viewRush(view); break;
       case 'trophies': cleanup = Extras.viewTrophies(view); break;
       case 'review': cleanup = Extras.viewReview(view); break;
+      case 'plan': cleanup = Plan.viewPlan(view); break;
+      case 'soundcheck': cleanup = Plan.viewSoundcheck(view); break;
+      case 'drill': cleanup = Plan.viewDrill(view, arg); break;
       default: cleanup = viewHome(view);
     }
     Extras.countView('/' + (name || 'home'));
@@ -314,6 +317,7 @@
         <div class="stat"><div class="v">${streak()} 🔥</div><div class="l">Day streak</div></div>
       </div>
       ${Extras.rankStrip()}
+      ${Plan.homeCard()}
       <div class="duo">
         ${Extras.dailyCard()}
         <div class="card">${coachBubble(`<b>Rocco's tip of the day:</b> ${esc(tip)}`, 'smirk')}
@@ -488,6 +492,8 @@
 
   /* ---------------- Puzzles ---------------- */
   function recommendedPuzzle(excludeId) {
+    const drill = Plan.drillNext(excludeId);
+    if (drill) return drill;
     const lv = prefs.pzLevel && prefs.pzLevel !== 'All' ? prefs.pzLevel : null;
     const inLevel = (p) => !lv || p.level === lv;
     const unsolved = PUZZLES.filter((p) => inLevel(p) && !(progress.puzzles[p.id] && progress.puzzles[p.id].solved) && p.id !== excludeId);
@@ -560,7 +566,7 @@
     const goal = pz.mate ? `Find checkmate in ${pz.mate}.` : 'Find the best move.';
     const board = trainerLayout(view, `
       <div class="crumbs"><a href="#puzzles">Jam Session</a> / #${num}</div>
-      <div class="row spread" style="align-items:center"><h2 style="margin:0">${esc(pz.title)}</h2><span class="pill">${LEVEL_ICON[pz.level]} ${pz.level} · ★ ${pz.rating}</span></div>
+      <div class="row spread" style="align-items:center"><h2 style="margin:0">${esc(pz.title)}</h2><span class="row" style="gap:6px">${Plan.drillBadge(pz)}<span class="pill">${LEVEL_ICON[pz.level]} ${pz.level} · ★ ${pz.rating}</span></span></div>
       ${coachBubble(`<b>${colorName(side)} to move.</b> ${goal}`, 'smirk')}
       <div class="feedback info"></div>
       <div class="row" style="align-items:center"><span class="muted">Your rating:</span> <b class="rt">${progress.rating}</b><span class="delta"></span></div>

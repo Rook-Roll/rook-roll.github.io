@@ -619,3 +619,77 @@ footer .about { font-size: 13px; opacity: 0.8; }
   .prush-bar .strikes i { width: 24px; height: 24px; font-size: 14px; }
   .ach-pop { top: 70px; }
 }
+
+/* ---------- Soundcheck (Elo test) & My Plan ---------- */
+.sc-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 16px; background: var(--yellow); color: var(--ink); border: 3px solid var(--ink); border-radius: 14px; box-shadow: 4px 4px 0 var(--red); font-family: var(--display); font-size: 18px; margin-bottom: 12px; }
+.sc-bar b { font-weight: 400; font-variant-numeric: tabular-nums; }
+.sc-bar.low { background: var(--red); color: #fff; }
+.sc-time { flex: 1; height: 10px; border-radius: 9px; background: rgba(14, 12, 18, 0.15); overflow: hidden; }
+.sc-time i { display: block; height: 100%; background: var(--ink); border-radius: 9px; transition: width 0.25s linear; }
+.sc-dots i.now { background: var(--yellow); }
+.sc-dots i:not(.ok):not(.no):not(.now) { background: var(--panel2); }
+.sc-exp { display: grid; gap: 8px; }
+.sc-exp .btn { justify-content: flex-start; text-align: left; }
+.sc-exp .btn span { font-size: 20px; margin-right: 4px; }
+.sc-know { background: var(--panel2); border-radius: 12px; padding: 10px 14px; }
+.sc-know summary { cursor: pointer; font-weight: 700; }
+.sc-know-row { display: flex; gap: 8px; margin: 10px 0 8px; flex-wrap: wrap; }
+.sc-know-row input, .sc-know-row select { min-height: 38px; border-radius: 10px; border: 2px solid var(--line); background: var(--panel); color: var(--text); padding: 6px 10px; font: inherit; }
+.sc-know-row input { width: 110px; }
+.sc-result { text-align: center; padding: 8px 0; }
+.sc-elo { font-family: var(--display); font-size: 64px; line-height: 1.05; color: var(--yellow); text-shadow: 4px 4px 0 var(--red); }
+.sc-result .up { color: var(--good); }
+.sc-result .down { color: var(--bad); }
+.skills { display: grid; gap: 8px; }
+.skill { display: grid; grid-template-columns: 140px minmax(0, 1fr) 76px; gap: 10px; align-items: center; font-weight: 700; font-size: 14px; }
+.skill .mini-bar { margin-top: 0; }
+.skill.good .mini-bar i { background: var(--good); }
+.skill.ok .mini-bar i { background: var(--yellow); }
+.skill.weak .mini-bar i { background: var(--red); }
+.skill > .muted { text-align: right; font-size: 13px; }
+.plan-card { display: flex; align-items: center; gap: 18px; margin-top: 16px; cursor: pointer; border-color: var(--yellow); }
+.plan-card:hover { transform: translateY(-2px); }
+.plan-card .pc-ico { font-size: 44px; line-height: 1; }
+.plan-card .pc-main { flex: 1; }
+.plan-card h3 { margin: 8px 0 4px; }
+.plan-card .pc-elo { text-align: center; min-width: 92px; padding: 8px 10px; background: var(--yellow); color: var(--ink); border: 3px solid var(--ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--red); }
+.plan-card .pc-elo b { display: block; font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1.1; }
+.plan-card .pc-elo small { display: block; font-size: 12px; font-weight: 700; }
+.plan-how { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.plan-how .ico { font-size: 32px; line-height: 1; }
+.plan-how h3 { margin: 10px 0 6px; }
+.plan-how p { margin: 0; }
+.plan-bar { margin: 0 0 14px; height: 12px; }
+.plan-bar i { background: var(--good); }
+.plan-steps { display: grid; gap: 10px; }
+.plan-step { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--panel); border: 2px solid var(--line); border-radius: var(--radius); }
+.plan-step.next { border-color: var(--yellow); box-shadow: 4px 4px 0 var(--red); }
+.plan-step.done { opacity: 0.72; }
+.plan-step .ps-ico { flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; font-size: 24px; background: var(--panel2); }
+.plan-step.done .ps-ico { background: rgba(61, 220, 132, 0.18); color: var(--good); font-weight: 800; }
+.plan-step .ps-main { flex: 1; }
+.plan-step .ps-t { font-weight: 800; }
+.plan-step .ps-d { font-size: 14px; margin-top: 2px; }
+.plan-step .ps-prog { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.plan-step .ps-prog .mini-bar { flex: 1; margin-top: 0; max-width: 260px; }
+.plan-step .ps-prog .muted { font-size: 13px; font-weight: 700; }
+.elo-hist { margin-top: 16px; }
+.elo-hist svg { width: 100%; height: 70px; margin-top: 8px; }
+@media (max-width: 980px) {
+  .plan-how { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .plan-card { flex-wrap: wrap; gap: 12px; }
+  .plan-card .pc-main { flex-basis: calc(100% - 120px); }
+  .plan-card > .btn { width: 100%; }
+  .plan-step { flex-wrap: wrap; }
+  .plan-step .ps-main { flex-basis: calc(100% - 60px); }
+  .plan-step > .btn { margin-left: 60px; }
+  .skill { grid-template-columns: 112px minmax(0, 1fr) 64px; font-size: 13px; }
+  .sc-elo { font-size: 52px; }
+  .sc-bar { font-size: 15px; padding: 7px 12px; }
+}
+@media (max-width: 640px) {
+  .hide-sm { display: none; }
+  .nav a { padding: 7px 8px; }
+}
